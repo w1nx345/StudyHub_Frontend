@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:studyhub/profilePage.dart'; // Import your filter page
-import 'package:studyhub/Filterpage.dart';
-import 'package:studyhub/search.dart'; // Import your profile page
+import 'package:studyhub/pages/profilePage.dart'; // Import your filter page
+import 'package:studyhub/pages/Filterpage.dart';
+import 'package:studyhub/pages/search.dart'; // Import your profile page
 
 void main() {
   runApp(MyApp());
