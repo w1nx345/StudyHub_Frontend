@@ -103,10 +103,10 @@ class _ProfilePageContentState extends State<ProfilePageContent> {
                     setState(() {
                       selectedAcademicLevel = value.toString();
                     });
-                    print(selectedAcademicLevel); // Print selected value
+                    print(selectedAcademicLevel);
                   },
                   isExpanded: true,
-                  underline: SizedBox(), // Remove the underline
+                  underline: SizedBox(),
                 ),
               ),
               SizedBox(height: 10),
@@ -129,10 +129,10 @@ class _ProfilePageContentState extends State<ProfilePageContent> {
                     setState(() {
                       selectedRole = value.toString();
                     });
-                    print(selectedRole); // Print selected value
+                    print(selectedRole);
                   },
                   isExpanded: true,
-                  underline: SizedBox(), // Remove the underline
+                  underline: SizedBox(),
                 ),
               ),
               Text("Description:"),
@@ -153,8 +153,8 @@ class _ProfilePageContentState extends State<ProfilePageContent> {
               SizedBox(height: 20),
               ElevatedButton(
                 onPressed: () {
-                  // Add functionality to save data here
-                  // For example, you can print the selected values
+
+                  // Nanti tambah fungsi
                   print("Name: " + "Placeholder for name");
                   print("Email: " + "Placeholder for email");
                   print("Academic Level: " + selectedAcademicLevel!);
@@ -175,7 +175,7 @@ class _ProfilePageContentState extends State<ProfilePageContent> {
             IconButton(
               icon: Icon(Icons.message, color: Colors.white),
               onPressed: () {
-                // Add functionality for message icon here
+               // Nanti tambah fungsi
               },
             ),
             IconButton(
@@ -189,7 +189,7 @@ class _ProfilePageContentState extends State<ProfilePageContent> {
             IconButton(
               icon: Icon(Icons.settings, color: Colors.white),
               onPressed: () {
-                // Add functionality for settings icon here
+                // Nanti tambah fungsi
               },
             ),
           ],

@@ -26,7 +26,7 @@ class _SearchPageState extends State<SearchPage> {
         ),
         actions: <Widget>[
           IconButton(
-            icon: Icon(Icons.filter_2_outlined, color: Colors.white),
+            icon: Icon(Icons.filter_list, color: Colors.white),
             onPressed: () {
               Navigator.push(
                 context,
@@ -52,7 +52,7 @@ class _SearchPageState extends State<SearchPage> {
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      // Profile Picture Icon
+
                       CircleAvatar(
                         backgroundColor: Colors.blue,
                         child: Icon(Icons.person, color: Colors.white),
@@ -94,13 +94,13 @@ class _SearchPageState extends State<SearchPage> {
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      // Profile Picture Icon
+
                       CircleAvatar(
                         backgroundColor: Colors.blue,
                         child: Icon(Icons.person, color: Colors.white),
                       ),
                       SizedBox(height: 10),
-                      // User Info
+
                       Text(
                         user.name,
                         style: TextStyle(fontSize: 20.0),
@@ -150,7 +150,7 @@ class _SearchPageState extends State<SearchPage> {
             IconButton(
               icon: Icon(Icons.message, color: Colors.white),
               onPressed: () {
-                // Add functionality for message icon here
+                // Nanti tambah fungsi
               },
             ),
             IconButton(
@@ -165,7 +165,7 @@ class _SearchPageState extends State<SearchPage> {
             IconButton(
               icon: Icon(Icons.settings, color: Colors.white),
               onPressed: () {
-                // Add functionality for settings icon here
+                // Nanti tambah fungsi
               },
             ),
           ],

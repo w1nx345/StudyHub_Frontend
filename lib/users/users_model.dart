@@ -6,7 +6,7 @@ class User {
   int age;
   String learningType;
 
-  // Constructor
+
   User({
     required this.id,
     required this.name,
