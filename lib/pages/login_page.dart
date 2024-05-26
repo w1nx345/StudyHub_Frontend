@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:learn_hub/components/my_button.dart';
 import 'package:learn_hub/components/my_textfield.dart';
 import 'package:learn_hub/components/square_tile.dart';
-import 'package:learn_hub/users/users.dart';
 
 class LoginPage extends StatelessWidget {
   LoginPage({super.key});
@@ -15,25 +14,13 @@ class LoginPage extends StatelessWidget {
   void signUserIn() {
     String enteredEmail = emailController.text;
     String enteredPassword = passwordController.text;
-    
-    String validEmail = 'jacky.suwandi@gmail.com';
-    String validPassword = '123456';
-    if (enteredEmail == validEmail && enteredPassword == validPassword) {
-      // Successful login, navigate to the home screen or perform any other action
-      return print('Login successful!');
-      // You can navigate to another screen or perform any other action here
-    } else {
-      // Failed login, display an error message or perform any other action
-      // You can display an error message to the user or perform any other action here
-      return print('Invalid Email or Password');
-    }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       resizeToAvoidBottomInset: false,
-      backgroundColor: Colors.indigoAccent[100],
+      backgroundColor: const Color(0xFF2F27CE),
       body:SingleChildScrollView(
         child: Center(
           child: Column(
@@ -41,23 +28,13 @@ class LoginPage extends StatelessWidget {
             children: [
               const SizedBox(height: 50),
               // logo
-              const Icon(
-                Icons.hub_outlined,
-
-                size: 100,
-              ),
+          Image.asset(
+            'lib/images/Study Hub Logo.png',
+            height: 250,
+            width: 250,
+          ),
 
               const SizedBox(height: 50),
-
-              // welcome back, you've been missed!
-              Text(
-                'STUDY HUB',
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 60,
-                  fontFamily: 'OpenSans',
-                ),
-              ),
 
               const SizedBox(height: 25),
 
@@ -66,16 +43,14 @@ class LoginPage extends StatelessWidget {
                   SizedBox(
                     width: double.infinity,
                     height: 40,
-                    child: Container(
-                      child: Text(
-                        'E-mail :',
-                        textAlign: TextAlign.left,
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontWeight: FontWeight.bold,
-                          fontSize: 20,
-                          fontFamily: 'OpenSans',
-                        ),
+                    child: Text(
+                      'E-mail :',
+                      textAlign: TextAlign.left,
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 20,
+                        fontFamily: 'OpenSans',
                       ),
                     ),
                   ),
@@ -85,7 +60,6 @@ class LoginPage extends StatelessWidget {
               // E-mail textfield
               MyTextField(
                 controller: emailController,
-                hintText: 'E-mail',
                 obscureText: false,
               ),
 
@@ -115,7 +89,6 @@ class LoginPage extends StatelessWidget {
               // password textfield
               MyTextField(
                 controller: passwordController,
-                hintText: 'Password',
                 obscureText: true,
               ),
 
@@ -125,7 +98,10 @@ class LoginPage extends StatelessWidget {
 
               // sign in button
               MyButton(
-                onTap: signUserIn,
+                onTap: () {
+        Navigator.pushNamed(context, '/chatlist');
+        },
+                width: 200,
               ),
 
               const SizedBox(height: 50),
@@ -183,7 +159,7 @@ class LoginPage extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Text(
-                    'Not a member?',
+                    'If you haven’t any account?',
                     style: TextStyle(
                         fontFamily: 'OpenSans',
                         color: Colors.white
@@ -191,7 +167,7 @@ class LoginPage extends StatelessWidget {
                   ),
                   const SizedBox(width: 4),
                   const Text(
-                    'Register now',
+                    'Sign Up',
                     style: TextStyle(
                       color: Colors.blue,
                       fontWeight: FontWeight.bold,

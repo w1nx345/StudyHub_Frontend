@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:learn_hub/pages/filter_page.dart';
+import 'package:learn_hub/pages/chatlist_page.dart';
+import 'package:learn_hub/pages/login_page.dart';
 
 class SettingsPage extends StatelessWidget {
   const SettingsPage({Key? key}) : super(key: key);
@@ -13,14 +16,14 @@ class SettingsPage extends StatelessWidget {
         title: const Text("Settings",
           style: TextStyle(
               color: Colors.white,
-            fontFamily: 'Open Sans',
-            fontWeight: FontWeight.bold,
+            fontFamily: 'OpenSans',
+            fontWeight: FontWeight.w800,
           ),
         ),
         leading: Icon(Icons.settings, size: 40, color: Colors.white),
-        backgroundColor: Colors.indigo[400],
+        backgroundColor: Color(0xFF241E90),
       ),
-      backgroundColor: Colors.indigoAccent[100],
+      backgroundColor: Color(0xFF2F27CE),
       body: Center(
         child: Container(
           constraints: const BoxConstraints(maxWidth: 400),
@@ -28,54 +31,54 @@ class SettingsPage extends StatelessWidget {
             children: [
               _SingleSection(
                 title: "Account Settings",
-                fontFamily: 'Open Sans',
+                fontFamily: 'OpenSans',
                 children: [
                   const _CustomListTile(
                     title: "Account",
                     icon: Icons.person,
-                    fontFamily: 'Open Sans',
+                    fontFamily: 'OpenSans',
                   ),
                   const _CustomListTile(
                     title: "Privacy & Security",
                     icon: Icons.lock,
-                    fontFamily: 'Open Sans',
+                    fontFamily: 'OpenSans',
                   ),
                   const _CustomListTile(
                     title: "Premium",
                     icon: Icons.workspace_premium_rounded,
-                    fontFamily: 'Open Sans',
+                    fontFamily: 'OpenSans',
                   ),
                 ],
               ),
               _SingleSection(
                 title: "App Settings",
-                fontFamily: 'Open Sans',
+                fontFamily: 'OpenSans',
                 children: [
                   const _CustomListTile(
                     title: "Notification",
                     icon: Icons.notifications,
-                    fontFamily: 'Open Sans',
+                    fontFamily: 'OpenSans',
                   ),
                   _CustomListTile(
                     title: "Chats",
                     icon: Icons.chat,
-                    fontFamily: 'Open Sans',
+                    fontFamily: 'OpenSans',
                   ),
                   const _CustomListTile(
                     title: "Language",
                     icon: Icons.language_rounded,
-                    fontFamily: 'Open Sans',
+                    fontFamily: 'OpenSans',
                   ),
                 ],
               ),
               const _SingleSection(
                 title: "Support",
-                fontFamily: 'Open Sans',
+                fontFamily: 'OpenSans',
                 children: [
                   _CustomListTile(
                     title: "Support",
                     icon: Icons.support_agent_rounded,
-                    fontFamily: 'Open Sans',
+                    fontFamily: 'OpenSans',
                   ),
                 ],
               ),
@@ -86,29 +89,69 @@ class SettingsPage extends StatelessWidget {
 
       // Logout button
       floatingActionButtonLocation: FloatingActionButtonLocation.startDocked,
-      floatingActionButton: InkWell(
-    onTap: () {},
-      child:  Container(
-        margin: const EdgeInsets.only(left: 16.0, bottom: 16.0),
-        width: 106 * fem,
-        height: 37 * fem,
-        decoration: BoxDecoration(
-          color: Color(0xffd9d9d9),
-          borderRadius: BorderRadius.circular(8 * fem),
-        ),
-        child: Center(
-          child: Text(
-            'Log Out',
-            style: TextStyle(
-              color: Colors.red,
-              fontWeight: FontWeight.bold,
-              fontSize: 20,
-              fontFamily: 'Open Sans',
+      floatingActionButton: Container(
+        margin: const EdgeInsets.only(left: 16.0, bottom: 70.0),
+        child: Material(
+          color: Colors.transparent,
+          child: InkWell(
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => LoginPage()),
+                );
+              },
+            child: Container(
+              width: 106,
+              height: 37,
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(8),
+              ),
+              child: Center(
+                child: Text(
+                  'Log Out',
+                  style: TextStyle(
+                    color: Colors.red,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 20,
+                    fontFamily: 'OpenSans',
+                  ),
+                ),
+              ),
             ),
           ),
         ),
       ),
-    ),
+      bottomNavigationBar: BottomNavigationBar(
+        backgroundColor: Color(0xFF241E90),
+        items: const [
+          BottomNavigationBarItem(
+            icon: Icon(Icons.chat, color: Colors.white),
+            label: '',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.search, color: Colors.white),
+            label: '',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.settings, color: Colors.white),
+            label: '',
+          ),
+        ],
+        onTap: (index) {
+          if (index == 0) {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => ChatListPage()),
+            );
+          } else if (index == 2) {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => SettingsPage()),
+            );
+          }
+        },
+      ),
     );
   }
 }
@@ -178,8 +221,8 @@ class _SingleSection extends StatelessWidget {
             style:
             Theme.of(context).textTheme.displaySmall?.copyWith(fontSize: 16,
             color: titleColor ?? Colors.white,
-              fontFamily: 'Open Sans',
-              fontWeight: FontWeight.bold,
+              fontFamily: 'OpenSans',
+              fontWeight: FontWeight.w800,
             ),
           ),
         ),
