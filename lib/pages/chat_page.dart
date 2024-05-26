@@ -8,7 +8,6 @@ import 'package:flutter_chat_ui/flutter_chat_ui.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:bubble/bubble.dart';
 
-// For the testing purposes, you should probably use https://pub.dev/packages/uuid.
 String randomString() {
   final random = Random.secure();
   final values = List<int>.generate(16, (i) => random.nextInt(255));
@@ -110,24 +109,28 @@ class _ChatPageState extends State<ChatPage> {
 
   Widget _bubbleBuilder(
       Widget child, {
-        required message,
-        required nextMessageInGroup,
-      }) =>
-      Bubble(
+        required types.Message message,
+        required bool nextMessageInGroup,
+      }) {
+    final isCurrentUser = _user.id == message.author.id;
+    return Align(
+      alignment: isCurrentUser ? Alignment.centerRight : Alignment.centerLeft,
+      child: Container(
+        margin: const EdgeInsets.symmetric(vertical: 5.0, horizontal: 10.0),
+        padding: const EdgeInsets.all(1),
+        decoration: BoxDecoration(
+          color: isCurrentUser ? Colors.black : Colors.white,
+          borderRadius: BorderRadius.only(
+            topLeft: const Radius.circular(15),
+            topRight: const Radius.circular(15),
+            bottomLeft: isCurrentUser ? const Radius.circular(10) : const Radius.circular(0),
+            bottomRight: isCurrentUser ? const Radius.circular(0) : const Radius.circular(10),
+          ),
+        ),
         child: child,
-        color: _user.id != message.author.id ||
-            message.type == types.MessageType.image
-            ? const Color(0xfff5f5f7)
-            : Colors.black,
-        margin: nextMessageInGroup
-            ? const BubbleEdges.symmetric(horizontal: 6)
-            : null,
-        nip: nextMessageInGroup
-            ? BubbleNip.no
-            : _user.id != message.author.id
-            ? BubbleNip.leftBottom
-            : BubbleNip.rightBottom,
-      );
+      ),
+    );
+  }
 
   void _handleImageSelection() async {
     final result = await ImagePicker().pickImage(
