@@ -1,62 +1,120 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:learn_hub/pages/chatlist_page.dart';
 import 'package:learn_hub/pages/settings_page.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
+import 'package:shared_preferences/shared_preferences.dart';
 
-void main() {
-  runApp(const MyApp());
+class FilterPage extends StatefulWidget {
+  @override
+  _FilterPageState createState() => _FilterPageState();
 }
 
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+class _FilterPageState extends State<FilterPage> {
+  final storage = FlutterSecureStorage();
+  final genderController = TextEditingController();
+  final locationController = TextEditingController();
+  final bioController = TextEditingController();
+  final learningTypeController = TextEditingController();
+  final studyPlaceController = TextEditingController();
+  final academicLevelController = TextEditingController();
+  final ageController = TextEditingController(); // New age controller
 
-  @override
-  Widget build(BuildContext context) {
-    return const MaterialApp(
-      debugShowCheckedModeBanner: false,
-      home: FilterPage(),
-    );
+  String? selectedRole;
+  String? selectedSubjects;
+  String? userId;
+  String? selectedGender;
+  String? selectedAcademicLevel;
+  String? selectedLearningType;
+  String? selectedStudyPlace;
+
+  Future<void> userFilter() async {
+    userId = await storage.read(key: 'id');
+    if (userId != null) {
+      final response = await http.post(
+        Uri.parse('http://10.0.2.2:8000/filter/'),
+        headers: {'Content-Type': 'application/json'},
+        body: json.encode({
+          'id': userId,
+          'preferences': [
+            {
+              'gender': selectedGender,
+              'role': selectedRole,
+              'subject': selectedSubjects,
+              'academicLevel': selectedAcademicLevel,
+              'studyPlace': selectedStudyPlace,
+              'learningType': selectedLearningType,
+              'age': ageController.text, // Send age to backend
+            },
+          ],
+        }),
+      );
+      if (response.statusCode == 201) {
+        final jsonData = json.decode(response.body);
+
+        final prefs = await SharedPreferences.getInstance();
+
+        final userPreferences = jsonData['preferences'] as List;
+
+        for (var preference in userPreferences) {
+          final role = preference['role'];
+          final gender = preference['gender'];
+          final age = preference['age'];
+          final academicLevel = preference['academicLevel'];
+          final studyPlace = preference['studyPlace'];
+          final learningType = preference['learningType'];
+          final matkul = preference['matkul'];
+
+          prefs.setString('role', role);
+          prefs.setString('gender', gender);
+          prefs.setInt('age', age);
+          prefs.setString('academicLevel', academicLevel);
+          prefs.setString('studyPlace', studyPlace);
+          prefs.setString('learningType', learningType);
+          prefs.setString('matkul', matkul);
+        }
+
+        print('User preferences stored successfully.');
+      } else {
+        print('Error saving user preferences: ${response.statusCode}');
+        print(response.body);
+      }
+    }
   }
-}
 
-class FilterPage extends StatelessWidget {
-  const FilterPage({super.key});
+  final List<String> academicLevels = [
+    'Senior High School',
+    'Undergraduate',
+    'Master',
+    'Doctorate',
+    'Employee',
+  ];
+
+  final List<String> roles = [
+    "A Study Mate",
+    "Someone To Teach",
+    "Someone To Learn",
+  ];
+
+  final List<String> subjects = [
+    "Math", "Biology", "Coding", "Physics", "Literature", "Law", "Accounting"
+  ];
+
+  final List<String> Gender = [
+    "Male", "Female", "Other"
+  ];
+
+  final List<String> StudyPlace = [
+    "Cafe", "Library", "Park", "Video Call", "Call"
+  ];
+
+  final List<String> LearningType = [
+    "Visual Learner", "Read/Write Learner", "Auditory Learner", "Kinesthetic Learner", "Solitary Learner", "Naturalistic Learner", "Social Learner"
+  ];
 
   @override
   Widget build(BuildContext context) {
-    List<String> academicLevels = [
-      'Senior High School',
-      'Undergraduate',
-      'Master',
-      'Doctorate',
-      'Employee',
-    ];
-
-    List<String> roles = [
-      "A Study Mate",
-      "Someone To Teach",
-      "Someone To Learn",
-    ];
-
-    List<String> subjects = [
-      "Math", "Biology", "Coding", "Physics", "Literature", "Law", "Accounting"
-    ];
-
-    List<String> languages = [
-      "English", "Indonesia", "French", "Java"
-    ];
-
-    List<String> Gender = [
-      "Male", "Female", "Other"
-    ];
-
-    List<String> StudyPlace = [
-      "Cafe", "Library", "Park", "Video Call", "Call"
-    ];
-
-    List<String> LearningType = [
-      "Visual Learner", "Read/Write Learner", "Auditory Learner", "Kinesthetic Learner", "Solitary Learner", "Naturalistic Learner", "Social Learner"
-    ];
-
     return Scaffold(
       appBar: AppBar(
         title: Text(
@@ -81,28 +139,50 @@ class FilterPage extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               SizedBox(height: 20),
-              FilterDropdown(label: 'Jenjang', items: academicLevels),
+              _buildDropdown("Gender :", Gender, selectedGender, (value) {
+                setState(() {
+                  selectedGender = value;
+                });
+              }),
               SizedBox(height: 20),
-              FilterDropdown(label: 'Subject', items: subjects),
+              _buildDropdown("Subject :", subjects, selectedSubjects, (value) {
+                setState(() {
+                  selectedSubjects = value;
+                });
+              }),
               SizedBox(height: 20),
-              FilterDropdown(label: 'Language', items: languages),
+              _buildDropdown("Role :", roles, selectedRole, (value) {
+                setState(() {
+                  selectedRole = value;
+                });
+              }),
               SizedBox(height: 20),
-              FilterDropdown(label: 'Role', items: roles),
+              _buildDropdown("Academic Level :", academicLevels, selectedAcademicLevel, (value) {
+                setState(() {
+                  selectedAcademicLevel = value;
+                });
+              }),
               SizedBox(height: 20),
-              FilterDropdown(label: 'Gender', items: Gender),
+              _buildDropdown("Study Place :", StudyPlace, selectedStudyPlace, (value) {
+                setState(() {
+                  selectedStudyPlace = value;
+                });
+              }),
               SizedBox(height: 20),
-              FilterDropdown(label: 'Study Place', items: StudyPlace),
+              _buildDropdown("Learning Type :", LearningType, selectedLearningType, (value) {
+                setState(() {
+                  selectedLearningType = value;
+                });
+              }),
               SizedBox(height: 20),
-              FilterDropdown(label: 'Learning Type', items: LearningType),
+              _buildTextField("Age :", ageController),
               SizedBox(height: 20),
               Center(
                 child: SizedBox(
                   width: 106,
                   height: 37,
                   child: ElevatedButton(
-                    onPressed: () {
-                      // Perform filter action
-                    },
+                    onPressed: userFilter,
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Color(0xFF241E90),
                       shape: RoundedRectangleBorder(
@@ -142,64 +222,85 @@ class FilterPage extends StatelessWidget {
           ),
         ],
         onTap: (index) {
-          if (index == 0) {
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => ChatListPage()),
-            );
-          } else if (index == 2) {
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => SettingsPage()),
-            );
+          switch (index) {
+            case 0:
+              Navigator.pushNamed(context, '/chatlist');
+              break;
+            case 1:
+              Navigator.pushNamed(context, '/search');
+              break;
+            case 2:
+              Navigator.pushNamed(context, '/settings');
+              break;
           }
         },
       ),
     );
   }
-}
 
-class FilterDropdown extends StatelessWidget {
-  final String label;
-  final List<String> items;
-
-  const FilterDropdown({super.key, required this.label, required this.items});
-
-  @override
-  Widget build(BuildContext context) {
+  Widget _buildDropdown(String label, List<String> items, String? selectedItem,
+      ValueChanged<String?> onChanged) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          '$label :',
+          label,
           style: TextStyle(
-            fontSize: 18,
+            fontSize: 16,
+            fontWeight: FontWeight.bold,
             color: Colors.white,
-            fontFamily: 'OpenSans',
-            fontWeight: FontWeight.w800,
           ),
         ),
-        SizedBox(height: 10),
+        SizedBox(height: 5),
+        Container(
+          padding: EdgeInsets.symmetric(horizontal: 10),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(10),
+            color: Colors.grey[200],
+          ),
+          child: DropdownButton<String>(
+            value: selectedItem,
+            items: items.map((String item) {
+              return DropdownMenuItem<String>(
+                value: item,
+                child: Text(item),
+              );
+            }).toList(),
+            onChanged: onChanged,
+            isExpanded: true,
+            underline: SizedBox(),
+            dropdownColor: Colors.grey[200],
+            icon: Icon(Icons.arrow_drop_down, color: Colors.grey[700]),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildTextField(String label, TextEditingController controller) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          label,
+          style: TextStyle(
+            fontSize: 16,
+            fontWeight: FontWeight.bold,
+            color: Colors.white,
+          ),
+        ),
+        SizedBox(height: 5),
         Container(
           decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.circular(5),
+            borderRadius: BorderRadius.circular(10),
+            color: Colors.grey[200],
           ),
-          child: DropdownButtonFormField<String>(
+          child: TextFormField(
+            controller: controller,
             decoration: InputDecoration(
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(5),
-                borderSide: BorderSide.none,
-              ),
               contentPadding: EdgeInsets.symmetric(horizontal: 10),
+              border: InputBorder.none,
             ),
-            items: items
-                .map((item) => DropdownMenuItem(
-              value: item,
-              child: Text(item),
-            ))
-                .toList(),
-            onChanged: (value) {},
           ),
         ),
       ],
