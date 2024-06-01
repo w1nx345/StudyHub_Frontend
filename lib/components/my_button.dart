@@ -1,10 +1,14 @@
 import 'package:flutter/material.dart';
 
 class MyButton extends StatelessWidget {
-  final Function()? onTap;
-  final double? width;
+  final VoidCallback onTap;
+  final double width;
 
-  const MyButton({super.key, required this.onTap, this.width});
+  const MyButton({
+    required this.onTap,
+    required this.width,
+    Key? key,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -12,20 +16,18 @@ class MyButton extends StatelessWidget {
       onTap: onTap,
       child: Container(
         width: width,
-        padding: const EdgeInsets.all(15),
-        margin: const EdgeInsets.symmetric(horizontal: 15),
+        height: 50,
         decoration: BoxDecoration(
-          color: Color(0xFF372EF0),
-          borderRadius: BorderRadius.circular(20),
+          color: Colors.blue,
+          borderRadius: BorderRadius.circular(8),
         ),
-        child: const Center(
+        child: Center(
           child: Text(
-            "Login",
+            'Sign In',
             style: TextStyle(
               color: Colors.white,
               fontWeight: FontWeight.bold,
               fontSize: 16,
-              fontFamily: 'OpenSans',
             ),
           ),
         ),
