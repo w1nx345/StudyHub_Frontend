@@ -4,10 +4,10 @@ import 'package:learn_hub/pages/filter_page.dart';
 import 'package:learn_hub/pages/splash_screen.dart';
 import 'package:learn_hub/pages/chat_Page.dart';
 import 'package:learn_hub/pages/settings_page.dart';
-import 'pages/login_page.dart';
+import 'login_page.dart';
 import 'package:learn_hub/pages/profile_page.dart';
 import 'package:learn_hub/pages/search.dart';
-
+import 'package:learn_hub/pages/register_page.dart';
 void main() {
   runApp(const MyApp());
 }
@@ -21,7 +21,8 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
         home: SplashScreen(),
       routes: {
-    '/chatlist': (context) => ChatListPage(),
+        '/chatlist': (context) => ChatListPage(),
+        '/signup': (context) => SignUpPage(title: 'Study Hub',)
     },
     );
   }
