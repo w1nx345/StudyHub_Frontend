@@ -22,8 +22,12 @@ class MyApp extends StatelessWidget {
         home: SplashScreen(),
       routes: {
         '/chatlist': (context) => ChatListPage(),
-        '/signup': (context) => SignUpPage(title: 'Study Hub',)
-    },
+        '/signup': (context) => SignUpPage(title: 'Study Hub'),
+        '/search': (context) => SearchPage(),
+        '/filter': (context) => FilterPage(),
+        '/profile': (context) => ProfilePageContent(),
+        '/settings': (context) => SettingsPage(),
+      },
     );
   }
 }
