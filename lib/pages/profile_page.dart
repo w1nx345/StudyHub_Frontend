@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:learn_hub/pages/chatlist_page.dart';
-import 'package:learn_hub/pages/settings_page.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
 import 'dart:io';
 import 'package:image_picker/image_picker.dart';
-
+import 'package:learn_hub/pages/chatlist_page.dart';
+import 'package:learn_hub/pages/settings_page.dart';
 
 class ProfilePageContent extends StatefulWidget {
   @override
@@ -13,6 +15,11 @@ class ProfilePageContent extends StatefulWidget {
 class _ProfilePageContentState extends State<ProfilePageContent> {
   String? selectedRole;
   String? selectedSubjects;
+  String? userId;
+  String? selectedGender;
+  String? selectedAcademicLevel;
+  String? selectedLearningType;
+  String? selectedStudyPlace;
 
   final List<String> roles = [
     "A Study Mate",
@@ -30,12 +37,111 @@ class _ProfilePageContentState extends State<ProfilePageContent> {
     "Accounting"
   ];
 
-  final nameController = TextEditingController(text: "");
-  final emailController = TextEditingController(text: "");
+  final List<String> genders = ["Male", "Female", "Other"];
+
+  final List<String> learningTypes = [
+    "Visual Learner",
+    "Read/Write Learner",
+    "Auditory Learner",
+    "Kinesthetic Learner",
+    "Solitary Learner",
+    "Naturalistic Learner",
+    "Social Learner",
+  ];
+
+  final List<String> studyPlaces = [
+    "Cafe",
+    "Library",
+    "Park",
+    "Video Call",
+    "Call"
+  ];
+
+  final List<String> academicLevels = [
+    "Senior High School",
+    "Undergraduate",
+    "Master",
+    "Doctorate",
+    "Employee",
+  ];
+
+  final nameController = TextEditingController();
+  final emailController = TextEditingController();
+  final genderController = TextEditingController();
+  final locationController = TextEditingController();
+  final bioController = TextEditingController();
+  final learningTypeController = TextEditingController();
+  final studyPlaceController = TextEditingController();
+  final academicLevelController = TextEditingController();
 
   File? _image;
 
   final ImagePicker _picker = ImagePicker();
+  final storage = FlutterSecureStorage();
+
+  @override
+  void initState() {
+    super.initState();
+    getUserId();
+  }
+
+  Future<void> getUserId() async {
+    userId = await storage.read(key: 'id');
+    if (userId != null) {
+      getUserData(userId!);
+    }
+  }
+
+  Future<void> getUserData(String userId) async {
+    final response = await http.get(Uri.parse('http://10.0.2.2:8000/profile?id=$userId'));
+    if (response.statusCode == 200) {
+      final data = json.decode(response.body);
+      print('User data: $data');
+      setState(() {
+        nameController.text = data['first_name'];
+        emailController.text = data['email'];
+        selectedRole = data['role'];
+        selectedSubjects = data['matkul'];
+        if (data['profileImageUrl'] != null) {
+          _image = File(data['profileImageUrl']);
+        }
+        selectedGender = data['gender'];
+        locationController.text = data['location'];
+        bioController.text = data['bio'];
+        selectedLearningType = data['learningType'];
+        selectedStudyPlace = data['studyPlace'];
+        selectedAcademicLevel = data['academicLevel'];
+      });
+    } else {
+      print("No user data");
+    }
+  }
+
+  Future<void> updateUserData() async {
+    final response = await http.patch(
+      Uri.parse('http://10.0.2.2:8000/updateProfile/'),
+      headers: {'Content-Type': 'application/json'},
+      body: json.encode({
+        'id': userId,
+        'first_name': nameController.text,
+        'email': emailController.text,
+        'role': selectedRole,
+        'matkul': selectedSubjects,
+        'gender': selectedGender,
+        'location': locationController.text,
+        'bio': bioController.text,
+        'learningType': selectedLearningType,
+        'studyPlace': selectedStudyPlace,
+        'academicLevel': selectedAcademicLevel,
+      }),
+    );
+
+    if (response.statusCode == 200) {
+      getUserId();
+    } else {
+      print("Failed to update user data");
+    }
+  }
 
   Future<void> getImage() async {
     try {
@@ -65,13 +171,13 @@ class _ProfilePageContentState extends State<ProfilePageContent> {
           ),
         ),
         leading: Padding(
-    padding: const EdgeInsets.only(left: 10.0),
-        child : CircleAvatar(
-          radius: 30,
-          backgroundColor: Colors.white,
-          child: Icon(Icons.person, size: 40, color: Color(0xFF241E90)),
+          padding: const EdgeInsets.only(left: 10.0),
+          child: CircleAvatar(
+            radius: 30,
+            backgroundColor: Colors.white,
+            child: Icon(Icons.person, size: 40, color: Color(0xFF241E90)),
+          ),
         ),
-      ),
         backgroundColor: Color(0xFF241E90),
       ),
       body: SingleChildScrollView(
@@ -132,17 +238,42 @@ class _ProfilePageContentState extends State<ProfilePageContent> {
                   });
                 }),
                 SizedBox(height: 10),
-                _buildDropdown("Subject :", subjects, selectedSubjects,
-                        (value) {
-                      setState(() {
-                        selectedSubjects = value;
-                      });
-                    }),
+                _buildDropdown("I am learning this subject :", subjects, selectedSubjects, (value) {
+                  setState(() {
+                    selectedSubjects = value;
+                  });
+                }),
+                SizedBox(height: 10),
+                _buildDropdown("Gender :", genders, selectedGender, (value) {
+                  setState(() {
+                    selectedGender = value;
+                  });
+                }),
+                SizedBox(height: 10),
+                _buildTextField("Location :", locationController),
+                SizedBox(height: 10),
+                _buildTextField("Bio :", bioController),
+                SizedBox(height: 10),
+                _buildDropdown("My Learning Type :", learningTypes, selectedLearningType, (value) {
+                  setState(() {
+                    selectedLearningType = value;
+                  });
+                }),
+                SizedBox(height: 10),
+                _buildDropdown("Preferred Study Place :", studyPlaces, selectedStudyPlace, (value) {
+                  setState(() {
+                    selectedStudyPlace = value;
+                  });
+                }),
+                SizedBox(height: 10),
+                _buildDropdown("Academic Level :", academicLevels, selectedAcademicLevel, (value) {
+                  setState(() {
+                    selectedAcademicLevel = value;
+                  });
+                }),
                 SizedBox(height: 20),
                 ElevatedButton(
-                  onPressed: () {
-                    // Perform filter action
-                  },
+                  onPressed: updateUserData,
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Color(0xFF241E90),
                     shape: RoundedRectangleBorder(
