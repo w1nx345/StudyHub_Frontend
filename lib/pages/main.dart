@@ -27,6 +27,7 @@ class MyApp extends StatelessWidget {
         '/filter': (context) => FilterPage(),
         '/profile': (context) => ProfilePageContent(),
         '/settings': (context) => SettingsPage(),
+        '/filter': (context) => FilterPage(),
       },
     );
   }
