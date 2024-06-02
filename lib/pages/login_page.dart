@@ -37,13 +37,11 @@ class LoginPage extends StatelessWidget {
         await storage.write(key: "refresh", value: refreshToken);
 
         Navigator.pushNamed(context, '/chatlist');
-      } else {
+      } else if (response.statusCode == 401){
         final jsonData = jsonDecode(response.body);
-        // Handle login error here (e.g., show a message to the user)
-        throw Exception(jsonData);
+        print(jsonData); // jangan lupa diapus
       }
     } catch (e) {
-      // Handle error (e.g., show a message to the user)
       print('Error logging in: $e');
     }
   }
