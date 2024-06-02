@@ -19,7 +19,7 @@ class _FilterPageState extends State<FilterPage> {
   final learningTypeController = TextEditingController();
   final studyPlaceController = TextEditingController();
   final academicLevelController = TextEditingController();
-  final ageController = TextEditingController(); // New age controller
+  final ageController = TextEditingController();
 
   String? selectedRole;
   String? selectedSubjects;
@@ -41,11 +41,10 @@ class _FilterPageState extends State<FilterPage> {
             {
               'gender': selectedGender,
               'role': selectedRole,
-              'subject': selectedSubjects,
+              'matkul': selectedSubjects,
               'academicLevel': selectedAcademicLevel,
               'studyPlace': selectedStudyPlace,
               'learningType': selectedLearningType,
-              'age': ageController.text, // Send age to backend
             },
           ],
         }),
@@ -56,11 +55,10 @@ class _FilterPageState extends State<FilterPage> {
         final prefs = await SharedPreferences.getInstance();
 
         final userPreferences = jsonData['preferences'] as List;
-
+        print(jsonData); // jangan lupa diapus
         for (var preference in userPreferences) {
           final role = preference['role'];
           final gender = preference['gender'];
-          final age = preference['age'];
           final academicLevel = preference['academicLevel'];
           final studyPlace = preference['studyPlace'];
           final learningType = preference['learningType'];
@@ -68,14 +66,13 @@ class _FilterPageState extends State<FilterPage> {
 
           prefs.setString('role', role);
           prefs.setString('gender', gender);
-          prefs.setInt('age', age);
           prefs.setString('academicLevel', academicLevel);
           prefs.setString('studyPlace', studyPlace);
           prefs.setString('learningType', learningType);
           prefs.setString('matkul', matkul);
         }
 
-        print('User preferences stored successfully.');
+        print('User preferences stored successfully.');// jangan lupa diapus
       } else {
         print('Error saving user preferences: ${response.statusCode}');
         print(response.body);
@@ -174,8 +171,6 @@ class _FilterPageState extends State<FilterPage> {
                   selectedLearningType = value;
                 });
               }),
-              SizedBox(height: 20),
-              _buildTextField("Age :", ageController),
               SizedBox(height: 20),
               Center(
                 child: SizedBox(
