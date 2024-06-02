@@ -4,10 +4,11 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'dart:io';
 import 'package:image_picker/image_picker.dart';
-import 'package:learn_hub/pages/chatlist_page.dart';
-import 'package:learn_hub/pages/settings_page.dart';
+
 
 class ProfilePageContent extends StatefulWidget {
+  const ProfilePageContent({super.key});
+
   @override
   _ProfilePageContentState createState() => _ProfilePageContentState();
 }
@@ -77,7 +78,7 @@ class _ProfilePageContentState extends State<ProfilePageContent> {
   File? _image;
 
   final ImagePicker _picker = ImagePicker();
-  final storage = FlutterSecureStorage();
+  final storage = const FlutterSecureStorage();
 
   @override
   void initState() {
@@ -96,7 +97,7 @@ class _ProfilePageContentState extends State<ProfilePageContent> {
     final response = await http.get(Uri.parse('http://10.0.2.2:8000/profile?id=$userId'));
     if (response.statusCode == 200) {
       final data = json.decode(response.body);
-      print('User data: $data');
+      print('User data: $data'); // jangan lupa diapus
       setState(() {
         nameController.text = data['first_name'];
         emailController.text = data['email'];
@@ -113,7 +114,7 @@ class _ProfilePageContentState extends State<ProfilePageContent> {
         selectedAcademicLevel = data['academicLevel'];
       });
     } else {
-      print("No user data");
+      print("No user data"); // jangan lupa diapus / diganti error handling
     }
   }
 
@@ -162,7 +163,7 @@ class _ProfilePageContentState extends State<ProfilePageContent> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(
+        title: const Text(
           "Profile Page",
           style: TextStyle(
             color: Colors.white,
@@ -170,15 +171,15 @@ class _ProfilePageContentState extends State<ProfilePageContent> {
             fontWeight: FontWeight.w800,
           ),
         ),
-        leading: Padding(
-          padding: const EdgeInsets.only(left: 10.0),
+        leading: const Padding(
+          padding: EdgeInsets.only(left: 10.0),
           child: CircleAvatar(
             radius: 30,
             backgroundColor: Colors.white,
             child: Icon(Icons.person, size: 40, color: Color(0xFF241E90)),
           ),
         ),
-        backgroundColor: Color(0xFF241E90),
+        backgroundColor: const Color(0xFF241E90),
       ),
       body: SingleChildScrollView(
         child: Center(
@@ -193,7 +194,7 @@ class _ProfilePageContentState extends State<ProfilePageContent> {
                       radius: 50,
                       backgroundImage: _image != null
                           ? FileImage(_image!)
-                          : NetworkImage(
+                          : const NetworkImage(
                         'https://cdn.pixabay.com/photo/2023/08/24/19/58/saitama-8211499_1280.png',
                       ) as ImageProvider,
                     ),
@@ -218,8 +219,8 @@ class _ProfilePageContentState extends State<ProfilePageContent> {
                     ),
                   ],
                 ),
-                SizedBox(height: 10),
-                Text(
+                const SizedBox(height: 10),
+                const Text(
                   "Saitama",
                   style: TextStyle(
                       fontSize: 24,
@@ -227,60 +228,60 @@ class _ProfilePageContentState extends State<ProfilePageContent> {
                       color: Colors.white,
                       fontFamily: 'OpenSans'),
                 ),
-                SizedBox(height: 10),
+                const SizedBox(height: 10),
                 _buildTextField("Name :", nameController),
-                SizedBox(height: 10),
+                const SizedBox(height: 10),
                 _buildTextField("E-mail :", emailController),
-                SizedBox(height: 10),
+                const SizedBox(height: 10),
                 _buildDropdown("Role :", roles, selectedRole, (value) {
                   setState(() {
                     selectedRole = value;
                   });
                 }),
-                SizedBox(height: 10),
+                const SizedBox(height: 10),
                 _buildDropdown("I am learning this subject :", subjects, selectedSubjects, (value) {
                   setState(() {
                     selectedSubjects = value;
                   });
                 }),
-                SizedBox(height: 10),
+                const SizedBox(height: 10),
                 _buildDropdown("Gender :", genders, selectedGender, (value) {
                   setState(() {
                     selectedGender = value;
                   });
                 }),
-                SizedBox(height: 10),
+                const SizedBox(height: 10),
                 _buildTextField("Location :", locationController),
-                SizedBox(height: 10),
+                const SizedBox(height: 10),
                 _buildTextField("Bio :", bioController),
-                SizedBox(height: 10),
+                const SizedBox(height: 10),
                 _buildDropdown("My Learning Type :", learningTypes, selectedLearningType, (value) {
                   setState(() {
                     selectedLearningType = value;
                   });
                 }),
-                SizedBox(height: 10),
+                const SizedBox(height: 10),
                 _buildDropdown("Preferred Study Place :", studyPlaces, selectedStudyPlace, (value) {
                   setState(() {
                     selectedStudyPlace = value;
                   });
                 }),
-                SizedBox(height: 10),
+                const SizedBox(height: 10),
                 _buildDropdown("Academic Level :", academicLevels, selectedAcademicLevel, (value) {
                   setState(() {
                     selectedAcademicLevel = value;
                   });
                 }),
-                SizedBox(height: 20),
+                const SizedBox(height: 20),
                 ElevatedButton(
                   onPressed: updateUserData,
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: Color(0xFF241E90),
+                    backgroundColor: const Color(0xFF241E90),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(8),
                     ),
                   ),
-                  child: Text(
+                  child: const Text(
                     'Save',
                     style: TextStyle(
                       color: Colors.white,
@@ -295,9 +296,9 @@ class _ProfilePageContentState extends State<ProfilePageContent> {
           ),
         ),
       ),
-      backgroundColor: Color(0xFF2F27CE),
+      backgroundColor: const Color(0xFF2F27CE),
       bottomNavigationBar: BottomNavigationBar(
-        backgroundColor: Color(0xFF241E90),
+        backgroundColor: const Color(0xFF241E90),
         items: const [
           BottomNavigationBarItem(
             icon: Icon(Icons.chat, color: Colors.white),
@@ -313,16 +314,16 @@ class _ProfilePageContentState extends State<ProfilePageContent> {
           ),
         ],
         onTap: (index) {
-          if (index == 0) {
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => ChatListPage()),
-            );
-          } else if (index == 2) {
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => SettingsPage()),
-            );
+          switch (index) {
+            case 0:
+              Navigator.pushNamed(context, '/chatlist');
+              break;
+            case 1:
+              Navigator.pushNamed(context, '/search');
+              break;
+            case 2:
+              Navigator.pushNamed(context, '/settings');
+              break;
           }
         },
       ),
@@ -335,13 +336,13 @@ class _ProfilePageContentState extends State<ProfilePageContent> {
       children: [
         Text(
           label,
-          style: TextStyle(
+          style: const TextStyle(
             fontSize: 16,
             fontWeight: FontWeight.bold,
             color: Colors.white,
           ),
         ),
-        SizedBox(height: 5),
+        const SizedBox(height: 5),
         Container(
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(10),
@@ -349,7 +350,7 @@ class _ProfilePageContentState extends State<ProfilePageContent> {
           ),
           child: TextFormField(
             controller: controller,
-            decoration: InputDecoration(
+            decoration: const InputDecoration(
               contentPadding: EdgeInsets.symmetric(horizontal: 10),
               border: InputBorder.none,
             ),
@@ -366,15 +367,15 @@ class _ProfilePageContentState extends State<ProfilePageContent> {
       children: [
         Text(
           label,
-          style: TextStyle(
+          style: const TextStyle(
             fontSize: 16,
             fontWeight: FontWeight.bold,
             color: Colors.white,
           ),
         ),
-        SizedBox(height: 5),
+        const SizedBox(height: 5),
         Container(
-          padding: EdgeInsets.symmetric(horizontal: 10),
+          padding: const EdgeInsets.symmetric(horizontal: 10),
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(10),
             color: Colors.grey[200],
@@ -389,7 +390,7 @@ class _ProfilePageContentState extends State<ProfilePageContent> {
             }).toList(),
             onChanged: onChanged,
             isExpanded: true,
-            underline: SizedBox(), // Remove underline
+            underline: const SizedBox(), // Remove underline
             dropdownColor: Colors.grey[200],
             icon: Icon(Icons.arrow_drop_down, color: Colors.grey[700]),
           ),
