@@ -45,7 +45,7 @@ class _SignUpState extends State<SignUpPage> {
           body: jsonEncode(<String, String>{
           'email': enteredEmail,
           'password': enteredPassword,
-          'DOB': enteredDOB,
+          'birth_date': enteredDOB,
           }),
       );
       if (response.statusCode == 201) {
@@ -73,99 +73,99 @@ class _SignUpState extends State<SignUpPage> {
       backgroundColor: const Color(0xFF2F27CE),
       body: Center(
         child: SingleChildScrollView(
-        padding: const EdgeInsets.only(bottom: 152.0),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            Image.asset('images/Study Hub Logo.png'),
-            const SizedBox(height: 20),
-            Padding(
-              padding: EdgeInsets.all(16.0),
-              child: Column(
-                children: [
-                  TextField(
-                    controller: emailController,
-                    obscureText: false,
-                    style: TextStyle(color: Colors.white),
-                    decoration: InputDecoration(
-                      labelText: 'E-mail :',
-                      labelStyle: TextStyle(
-                          color: Colors.white,
-                          fontFamily: "OpenSans-ExtraBold"),
-                      enabledBorder: OutlineInputBorder(
-                        borderSide: BorderSide(color: Colors.white),
-                        borderRadius: BorderRadius.all(Radius.circular(20)),
-                      ),
-                      focusedBorder: OutlineInputBorder(
-                        borderSide: BorderSide(color: Colors.white),
-                        borderRadius: BorderRadius.all(Radius.circular(20)),
-                      ),
-                    ),
-                  ),
-                  SizedBox(height: 10),
-                  TextField(
-                    controller: _dateController,
-                    style: TextStyle(color: Colors.white),
-                    decoration: InputDecoration(
-                      labelText: 'Date of Birth :',
-                      labelStyle: TextStyle(
-                          color: Colors.white,
-                          fontFamily: "OpenSans-ExtraBold"),
-                      filled: false,
-                      prefixIcon:
-                          Icon(Icons.calendar_today, color: Colors.white),
-                      enabledBorder: OutlineInputBorder(
-                        borderSide: BorderSide(color: Colors.white),
-                        borderRadius: BorderRadius.all(Radius.circular(20)),
-                      ),
-                      focusedBorder: OutlineInputBorder(
-                        borderSide: BorderSide(color: Colors.white),
-                        borderRadius: BorderRadius.all(Radius.circular(20)),
+          padding: const EdgeInsets.only(bottom: 152.0),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              Image.asset('images/Study Hub Logo.png'),
+              const SizedBox(height: 20),
+              Padding(
+                padding: EdgeInsets.all(16.0),
+                child: Column(
+                  children: [
+                    TextField(
+                      controller: emailController,
+                      obscureText: false,
+                      style: TextStyle(color: Colors.white),
+                      decoration: InputDecoration(
+                        labelText: 'E-mail :',
+                        labelStyle: TextStyle(
+                            color: Colors.white,
+                            fontFamily: "OpenSans-ExtraBold"),
+                        enabledBorder: OutlineInputBorder(
+                          borderSide: BorderSide(color: Colors.white),
+                          borderRadius: BorderRadius.all(Radius.circular(20)),
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          borderSide: BorderSide(color: Colors.white),
+                          borderRadius: BorderRadius.all(Radius.circular(20)),
+                        ),
                       ),
                     ),
-                    readOnly: true,
-                    onTap: () {
-                      _dateTime();
-                    },
-                  ),
-                  SizedBox(height: 10),
-                  TextField(
-                    controller: passwordController,
-                    style: TextStyle(color: Colors.white),
-                    obscureText: true,
-                    decoration: InputDecoration(
-                      labelText: 'Password :',
-                      labelStyle: TextStyle(
-                          color: Colors.white,
-                          fontFamily: "OpenSans-ExtraBold"),
-                      enabledBorder: OutlineInputBorder(
-                        borderSide: BorderSide(color: Colors.white),
-                        borderRadius: BorderRadius.all(Radius.circular(20)),
+                    SizedBox(height: 10),
+                    TextField(
+                      controller: _dateController,
+                      style: TextStyle(color: Colors.white),
+                      decoration: InputDecoration(
+                        labelText: 'Date of Birth :',
+                        labelStyle: TextStyle(
+                            color: Colors.white,
+                            fontFamily: "OpenSans-ExtraBold"),
+                        filled: false,
+                        prefixIcon:
+                        Icon(Icons.calendar_today, color: Colors.white),
+                        enabledBorder: OutlineInputBorder(
+                          borderSide: BorderSide(color: Colors.white),
+                          borderRadius: BorderRadius.all(Radius.circular(20)),
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          borderSide: BorderSide(color: Colors.white),
+                          borderRadius: BorderRadius.all(Radius.circular(20)),
+                        ),
                       ),
-                      focusedBorder: OutlineInputBorder(
-                        borderSide: BorderSide(color: Colors.white),
-                        borderRadius: BorderRadius.all(Radius.circular(20)),
+                      readOnly: true,
+                      onTap: () {
+                        _dateTime();
+                      },
+                    ),
+                    SizedBox(height: 10),
+                    TextField(
+                      controller: passwordController,
+                      style: TextStyle(color: Colors.white),
+                      obscureText: true,
+                      decoration: InputDecoration(
+                        labelText: 'Password :',
+                        labelStyle: TextStyle(
+                            color: Colors.white,
+                            fontFamily: "OpenSans-ExtraBold"),
+                        enabledBorder: OutlineInputBorder(
+                          borderSide: BorderSide(color: Colors.white),
+                          borderRadius: BorderRadius.all(Radius.circular(20)),
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          borderSide: BorderSide(color: Colors.white),
+                          borderRadius: BorderRadius.all(Radius.circular(20)),
+                        ),
                       ),
                     ),
-                  ),
-                  SizedBox(height: 10),
-                  ElevatedButton(
-                    onPressed: () {
-                      userRegister(context);
-                    },
-                    child: const Text("Join Now"),
-                    style: ButtonStyle(
-                      backgroundColor: MaterialStateProperty.all(Color(0x241E90)),
-                      foregroundColor: MaterialStateProperty.all(Colors.white),
+                    SizedBox(height: 10),
+                    ElevatedButton(
+                      onPressed: () {
+                        userRegister(context);
+                      },
+                      child: const Text("Join Now"),
+                      style: ButtonStyle(
+                        backgroundColor: MaterialStateProperty.all(Color(0x241E90)),
+                        foregroundColor: MaterialStateProperty.all(Colors.white),
+                      ),
                     ),
-                  ),
-                  SizedBox(height: 20),
-                ],
+                    SizedBox(height: 20),
+                  ],
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
-      ),
       ),
     );
   }
