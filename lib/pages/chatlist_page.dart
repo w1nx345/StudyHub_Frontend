@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:learn_hub/pages/filter_page.dart';
 import 'package:learn_hub/pages/profile_page.dart';
+import 'package:learn_hub/pages/search_page.dart';
 import 'package:learn_hub/pages/settings_page.dart';
 import 'package:learn_hub/pages/chat_page.dart';
 
@@ -35,10 +36,10 @@ class ChatListPage extends StatelessWidget {
             },
           ),
         ],
-        backgroundColor: Color(0xFF241E90),
+        backgroundColor: Color(0xFF00796B),
       ),
       body: Container(
-        color: Color(0xFF2F27CE),
+        color: Color(0xFF009688),
         child: Column(
           children: <Widget>[
             Padding(
@@ -111,7 +112,7 @@ class ChatListPage extends StatelessWidget {
               ),
             ),
             BottomNavigationBar(
-              backgroundColor: Color(0xFF241E90),
+              backgroundColor: Color(0xFF00796B),
               items: [
                 BottomNavigationBarItem(
                   icon: Icon(Icons.chat, color: Colors.white),
@@ -127,16 +128,18 @@ class ChatListPage extends StatelessWidget {
                 ),
               ],
               onTap: (index) {
-                if (index == 0) {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => ChatListPage()),
-                  );
-                } else if (index == 2) {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => SettingsPage()),
-                  );
+                switch (index) {
+                  case 0:
+                    Navigator.pushNamed(context, '/profile');
+                    break;
+                  case 1:
+                    Navigator.pushNamed(context, '/search');
+                    break;
+                  case 2:
+                    Navigator.pushNamed(context, '/settings');
+                    break;
+                  case 3:
+                    Navigator.pushNamed(context, '/filter');
                 }
               },
             ),

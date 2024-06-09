@@ -70,7 +70,7 @@ class _SignUpState extends State<SignUpPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFF2F27CE),
+      backgroundColor: const Color(0xFF00796B),
       body: Center(
         child: SingleChildScrollView(
           padding: const EdgeInsets.only(bottom: 152.0),
@@ -155,7 +155,7 @@ class _SignUpState extends State<SignUpPage> {
                       },
                       child: const Text("Join Now"),
                       style: ButtonStyle(
-                        backgroundColor: MaterialStateProperty.all(Color(0x241E90)),
+                        backgroundColor: MaterialStateProperty.all(Color(0xFF009688)),
                         foregroundColor: MaterialStateProperty.all(Colors.white),
                       ),
                     ),

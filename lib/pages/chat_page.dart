@@ -52,17 +52,17 @@ class _ChatPageState extends State<ChatPage> {
             icon: const Icon(Icons.filter_alt_rounded, color: Colors.white),
             onPressed: () {
               Navigator.push(
-                context, MaterialPageRoute(builder: (context) => const FilterPage()),
+                context, MaterialPageRoute(builder: (context) =>  FilterPage()),
               );
             },
           ),
         ],
-        backgroundColor: const Color(0xFF241E90),
+        backgroundColor: const Color(0xFF00796B),
       ),
       body: Column(
         children: [
           Container(
-            color: const Color(0xFF241DB2),
+            color: const Color(0xFF00796B),
             padding: const EdgeInsets.all(5),
             child: Row(
               children:[
@@ -92,8 +92,8 @@ class _ChatPageState extends State<ChatPage> {
           Expanded(
             child: Chat(
               theme: const DefaultChatTheme(
-                inputBackgroundColor: Color(0xFF241E90),
-                backgroundColor: Color(0xFF2F27CE),
+                inputBackgroundColor: Color(0xFF00796B),
+                backgroundColor: Color(0xFF009688),
               ),
               bubbleBuilder: _bubbleBuilder,
               onAttachmentPressed: _handleImageSelection,

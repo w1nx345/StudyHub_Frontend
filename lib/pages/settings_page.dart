@@ -21,9 +21,9 @@ class SettingsPage extends StatelessWidget {
           ),
         ),
         leading: Icon(Icons.settings, size: 40, color: Colors.white),
-        backgroundColor: Color(0xFF241E90),
+        backgroundColor: Color(0xFF00796B),
       ),
-      backgroundColor: Color(0xFF2F27CE),
+      backgroundColor: Color(0xFF009688),
       body: Center(
         child: Container(
           constraints: const BoxConstraints(maxWidth: 400),
@@ -123,7 +123,7 @@ class SettingsPage extends StatelessWidget {
         ),
       ),
       bottomNavigationBar: BottomNavigationBar(
-        backgroundColor: Color(0xFF241E90),
+        backgroundColor: Color(0xFF00796B),
         items: const [
           BottomNavigationBarItem(
             icon: Icon(Icons.chat, color: Colors.white),

@@ -179,7 +179,7 @@ class _ProfilePageContentState extends State<ProfilePageContent> {
             child: Icon(Icons.person, size: 40, color: Color(0xFF241E90)),
           ),
         ),
-        backgroundColor: const Color(0xFF241E90),
+        backgroundColor: const Color(0xFF00796B),
       ),
       body: SingleChildScrollView(
         child: Center(
@@ -296,9 +296,9 @@ class _ProfilePageContentState extends State<ProfilePageContent> {
           ),
         ),
       ),
-      backgroundColor: const Color(0xFF2F27CE),
+      backgroundColor: const Color(0xFF009688),
       bottomNavigationBar: BottomNavigationBar(
-        backgroundColor: const Color(0xFF241E90),
+        backgroundColor: const Color(0xFF00796B),
         items: const [
           BottomNavigationBarItem(
             icon: Icon(Icons.chat, color: Colors.white),

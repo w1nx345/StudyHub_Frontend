@@ -1,8 +1,8 @@
   import 'package:flutter/material.dart';
-  import 'package:study_hub/pages/filter_page.dart';
-  import 'package:study_hub/pages/profile_page.dart';
-  import 'package:study_hub/pages/chatlist_page.dart';
-  import 'package:study_hub/pages/settings_page.dart';
+  import 'package:learn_hub/pages/filter_page.dart';
+  import 'package:learn_hub/pages/profile_page.dart';
+  import 'package:learn_hub/pages/chatlist_page.dart';
+  import 'package:learn_hub/pages/settings_page.dart';
   import 'package:flutter_card_swiper/flutter_card_swiper.dart';
 
   class SearchPage extends StatefulWidget {

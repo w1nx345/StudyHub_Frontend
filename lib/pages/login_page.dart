@@ -50,7 +50,7 @@ class LoginPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       resizeToAvoidBottomInset: true,
-      backgroundColor: const Color(0xFF2F27CE),
+      backgroundColor: const Color(0xFF00796B),
       body: SingleChildScrollView(
         child: Center(
           child: Column(
@@ -58,7 +58,7 @@ class LoginPage extends StatelessWidget {
             children: [
               const SizedBox(height: 50),
               Image.asset(
-                'images/Study Hub Logo.png',
+                'lib/images/Study Hub Logo.png',
                 height: 250,
                 width: 250,
               ),
@@ -151,9 +151,9 @@ class LoginPage extends StatelessWidget {
               const Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  SquareTile(imagePath: 'images/google.png'),
+                  SquareTile(imagePath: 'lib/images/google.png'),
                   SizedBox(width: 25),
-                  SquareTile(imagePath: 'images/facebook.png')
+                  SquareTile(imagePath: 'lib/images/facebook.png')
                 ],
               ),
               const SizedBox(height: 50),

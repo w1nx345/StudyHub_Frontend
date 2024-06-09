@@ -122,7 +122,7 @@ class _FilterPageState extends State<FilterPage> {
             fontWeight: FontWeight.w800,
           ),
         ),
-        backgroundColor: Color(0xFF241E90),
+        backgroundColor: Color(0xFF00796B),
         leading: Icon(
           color: Colors.white,
           Icons.filter_alt_rounded,
@@ -130,7 +130,7 @@ class _FilterPageState extends State<FilterPage> {
       ),
       body: SingleChildScrollView(
         child: Container(
-          color: Color(0xFF2F27CE),
+          color: Color(0xFF009688),
           padding: EdgeInsets.all(16.0),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -171,7 +171,7 @@ class _FilterPageState extends State<FilterPage> {
                   selectedLearningType = value;
                 });
               }),
-              SizedBox(height: 20),
+              SizedBox(height: 80),
               Center(
                 child: SizedBox(
                   width: 106,
@@ -179,7 +179,7 @@ class _FilterPageState extends State<FilterPage> {
                   child: ElevatedButton(
                     onPressed: userFilter,
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: Color(0xFF241E90),
+                      backgroundColor: Color(0xFF00796B),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(8),
                       ),
@@ -201,7 +201,7 @@ class _FilterPageState extends State<FilterPage> {
         ),
       ),
       bottomNavigationBar: BottomNavigationBar(
-        backgroundColor: Color(0xFF241E90),
+        backgroundColor: Color(0xFF00796B),
         items: const [
           BottomNavigationBarItem(
             icon: Icon(Icons.chat, color: Colors.white),
