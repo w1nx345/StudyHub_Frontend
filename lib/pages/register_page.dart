@@ -77,7 +77,7 @@ class _SignUpState extends State<SignUpPage> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
-              Image.asset('images/Study Hub Logo.png'),
+              Image.asset('lib/images/Study Hub Logo.png'),
               const SizedBox(height: 20),
               Padding(
                 padding: EdgeInsets.all(16.0),
