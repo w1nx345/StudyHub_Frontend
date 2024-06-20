@@ -1,21 +1,54 @@
+import 'dart:convert';
 import 'package:flutter/material.dart';
-import 'package:study_hub/components/my_button.dart';
-import 'package:study_hub/components/my_textfield.dart';
-import 'package:study_hub/components/square_tile.dart';
+import 'package:learn_hub/components/my_button.dart';
+import 'package:learn_hub/components/my_textfield.dart';
+import 'package:learn_hub/components/square_tile.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:http/http.dart' as http;
 
 class LoginPage extends StatelessWidget {
   LoginPage({super.key});
-
-  // text editing controllers
+  final storage = FlutterSecureStorage();
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
 
   // sign user in method
-  void signUserIn() {
+  void signUserIn(BuildContext context) async {
     String enteredEmail = emailController.text;
-    String enteredPassword = emailController.text;
-    // Add your sign-in logic here
+    String enteredPassword = passwordController.text;
+
+    try {
+      final response = await http.post(
+        Uri.parse('http://10.0.2.2:8000/login/'),
+        headers: {'Content-Type': 'application/json'},
+        body: jsonEncode(<String, String>{
+          'email': enteredEmail,
+          'password': enteredPassword
+        }),
+      );
+
+      if (response.statusCode == 200) {
+        final jsonData = jsonDecode(response.body);
+        final accessToken = jsonData['access'];
+        final refreshToken = jsonData['refresh'];
+        final userId = jsonData['id'].toString();
+
+        //save token di local storage
+        await storage.write(key: "access", value: accessToken);
+        await storage.write(key: "refresh", value: refreshToken);
+        await storage.write(key: "id", value: userId);
+
+        print(accessToken); // buat liat apakah dapet token nanti diapus
+        Navigator.pushNamed(context, '/search');
+      } else if (response.statusCode == 401){
+        final jsonData = jsonDecode(response.body);
+        print(jsonData); // jangan lupa diapus
+      }
+    } catch (e) {
+      print('Error logging in: $e');
+    }
   }
+
 
   @override
   Widget build(BuildContext context) {
@@ -97,15 +130,12 @@ class LoginPage extends StatelessWidget {
 
               // sign in button
               MyButton(
-                onTap: () {
-                  Navigator.pushNamed(context, '/search');
-                },
+                onTap: () => signUserIn(context),
                 width: 200,
               ),
 
               const SizedBox(height: 50),
 
-              // or continue with
               const Padding(
                 padding: EdgeInsets.symmetric(horizontal: 25.0),
                 child: Row(
@@ -153,31 +183,31 @@ class LoginPage extends StatelessWidget {
               ),
 
               const SizedBox(height: 50),
-
-              const SizedBox(
-                height: 80,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text(
-                      'If you haven’t any account?',
-                      style: TextStyle(
-                        fontFamily: 'OpenSans',
-                        color: Colors.white,
-                      ),
-                    ),
-                    SizedBox(width: 4),
-                    Text(
-                      'Sign Up',
-                      style: TextStyle(
-                        color: Colors.white ,
-                        fontWeight: FontWeight.w800,
-                        fontFamily: 'OpenSans',
-                      ),
-                    ),
-                  ],
-                ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+            Text(
+            'If you haven’t any account?',
+            style: TextStyle(
+              fontFamily: 'OpenSans',
+              color: Colors.white,
+            ),
+          ),
+          const SizedBox(width: 4),
+          GestureDetector(
+            onTap: () {
+              Navigator.pushNamed(context, '/signup'); // ke sign up page
+            },
+            child: const Text(
+              'Sign Up',
+              style: TextStyle(
+                color: Colors.blue,
+                fontWeight: FontWeight.bold,
+                fontFamily: 'OpenSans',
               ),
+            ),
+          ),
+        ]),
             ],
           ),
         ),
