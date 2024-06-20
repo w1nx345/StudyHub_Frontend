@@ -50,9 +50,8 @@ class _SignUpState extends State<SignUpPage> {
       );
       if (response.statusCode == 201) {
         final jsonData = jsonDecode(response.body);
-        final id = jsonData['id'].toString();
-        await storage.write(key: "id", value: id);
-
+        final message = jsonData['message'];
+        print(message);
         Navigator.push( // ke login page klo berhasil register
           context,
           MaterialPageRoute(
