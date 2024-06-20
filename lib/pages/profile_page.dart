@@ -86,14 +86,14 @@ class _ProfilePageContentState extends State<ProfilePageContent> {
     getUserId();
   }
 
-  Future<void> getUserId() async {
+  Future<void> getUserId() async { // ngambil id si user
     userId = await storage.read(key: 'id');
     if (userId != null) {
       getUserData(userId!);
     }
   }
 
-  Future<void> getUserData(String userId) async {
+  Future<void> getUserData(String userId) async { // ngambil data user
     final response = await http.get(Uri.parse('http://10.0.2.2:8000/profile?id=$userId'));
     if (response.statusCode == 200) {
       final data = json.decode(response.body);
@@ -118,7 +118,7 @@ class _ProfilePageContentState extends State<ProfilePageContent> {
     }
   }
 
-  Future<void> updateUserData() async {
+  Future<void> updateUserData() async { // update data user
     final response = await http.patch(
       Uri.parse('http://10.0.2.2:8000/updateProfile/'),
       headers: {'Content-Type': 'application/json'},
@@ -144,7 +144,7 @@ class _ProfilePageContentState extends State<ProfilePageContent> {
     }
   }
 
-  Future<void> getImage() async {
+  Future<void> getImage() async { // buat ngambil image dr gallery
     try {
       final pickedFile = await _picker.pickImage(source: ImageSource.gallery);
       if (pickedFile != null) {
