@@ -8,7 +8,7 @@ class User {
   final String learningType;
   final String studyPlace;
   final String academicLevel;
-  final String imageUrl;
+  final String profilePicture;
 
   User({
     required this.userId,
@@ -20,7 +20,7 @@ class User {
     required this.learningType,
     required this.studyPlace,
     required this.academicLevel,
-    required this.imageUrl,
+    required this.profilePicture,
   });
 
   factory User.fromJson(Map<String, dynamic> json) {
@@ -34,7 +34,7 @@ class User {
       learningType: json['learningType'],
       studyPlace: json['studyPlace'],
       academicLevel: json['academicLevel'],
-      imageUrl: json['imageUrl'], // buat image url tapi belom kepake
+      profilePicture: json['profilePicture'], // buat image url tapi belom kepake
     );
   }
 }
