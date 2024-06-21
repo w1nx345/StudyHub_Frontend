@@ -6,6 +6,7 @@ import 'dart:io';
 import 'package:image_picker/image_picker.dart';
 
 
+
 class ProfilePageContent extends StatefulWidget {
   const ProfilePageContent({super.key});
 
@@ -21,6 +22,7 @@ class _ProfilePageContentState extends State<ProfilePageContent> {
   String? selectedAcademicLevel;
   String? selectedLearningType;
   String? selectedStudyPlace;
+  String? _profilePicturePath;
 
   final List<String> roles = [
     "A Study Mate",
@@ -80,6 +82,7 @@ class _ProfilePageContentState extends State<ProfilePageContent> {
   final ImagePicker _picker = ImagePicker();
   final storage = const FlutterSecureStorage();
 
+
   @override
   void initState() {
     super.initState();
@@ -92,7 +95,13 @@ class _ProfilePageContentState extends State<ProfilePageContent> {
       getUserData(userId!);
     }
   }
-
+  ImageProvider _imageFromFilePath(String? filePath) { // buat nentuin apakah si user ini punya path untuk profile picture atau tidak
+    if (filePath == null) { //user ga punya profile picture, jadi pake default
+      return NetworkImage('https://cdn.pixabay.com/photo/2023/08/24/19/58/saitama-8211499_1280.png');
+    } else {
+      return NetworkImage('http://10.0.2.2:8000/$filePath'); // ngambil profile picture si user
+    }
+  }
   Future<void> getUserData(String userId) async { // ngambil data user
     final response = await http.get(Uri.parse('http://10.0.2.2:8000/profile?id=$userId'));
     if (response.statusCode == 200) {
@@ -103,8 +112,10 @@ class _ProfilePageContentState extends State<ProfilePageContent> {
         emailController.text = data['email'];
         selectedRole = data['role'];
         selectedSubjects = data['matkul'];
-        if (data['profileImageUrl'] != null) {
-          _image = File(data['profileImageUrl']);
+        if (data['profilePicture'] != null) {
+         _profilePicturePath= data['profilePicture'];
+        }else{
+          _profilePicturePath = null;
         }
         selectedGender = data['gender'];
         locationController.text = data['location'];
@@ -118,7 +129,10 @@ class _ProfilePageContentState extends State<ProfilePageContent> {
     }
   }
 
-  Future<void> updateUserData() async { // update data user
+  Future<void> updateUserData() async { // update user data
+    if (_image != null) {
+      await uploadImage(_image!);
+    }
     final response = await http.patch(
       Uri.parse('http://10.0.2.2:8000/updateProfile/'),
       headers: {'Content-Type': 'application/json'},
@@ -158,6 +172,19 @@ class _ProfilePageContentState extends State<ProfilePageContent> {
       print('Error picking image: $e');
     }
   }
+  Future<void> uploadImage(File image) async { // fungsi upload image
+    var request = http.MultipartRequest(
+        'POST', Uri.parse('http://10.0.2.2:8000/profileImage/upload/'));
+    request.files.add(await http.MultipartFile.fromPath('profilePicture', image.path));
+    request.fields['id'] = userId ?? '';
+
+    var response = await request.send();
+    if (response.statusCode == 200) {
+      print('Image uploaded');
+    } else {
+      print('Failed to upload image');
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -192,11 +219,7 @@ class _ProfilePageContentState extends State<ProfilePageContent> {
                   children: [
                     CircleAvatar(
                       radius: 50,
-                      backgroundImage: _image != null
-                          ? FileImage(_image!)
-                          : const NetworkImage(
-                        'https://cdn.pixabay.com/photo/2023/08/24/19/58/saitama-8211499_1280.png',
-                      ) as ImageProvider,
+                      backgroundImage: _imageFromFilePath(_profilePicturePath),
                     ),
                     Positioned(
                       bottom: 0,
