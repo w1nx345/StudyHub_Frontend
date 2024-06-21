@@ -8,6 +8,8 @@
   import 'package:learn_hub/users/users_model.dart';
   import 'dart:convert';
   import 'package:shared_preferences/shared_preferences.dart';
+  import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+
   class SearchPage extends StatefulWidget {
     @override
     State<SearchPage> createState() => _SearchPageState();
@@ -17,6 +19,8 @@
     List<Map<String, dynamic>> allUsers = []; // buat menampung semua data user yang diambil dari database
     List<Map<String, dynamic>> filteredUsers = []; // menampung data user yang sudah di filter berdasarkan preferensi kita
     bool isLoading = true;
+    final storage = const FlutterSecureStorage();
+    String? userId; // nampung id si user
 
     @override
     void initState() {
@@ -25,8 +29,16 @@
     }
 
     Future<void> fetchAllUser() async { // function buat http get request buat ngambil semua data user
-      final response = await http.get(Uri.parse('http://10.0.2.2:8000/search/'));
+      userId = await storage.read(key: 'id');
+      final response = await http.post(
+        Uri.parse('http://10.0.2.2:8000/search/'),
+        headers: {'Content-Type': 'application/json'},
+        body: json.encode({
+          'id': userId,
+        }),
+      );
       if (response.statusCode == 200){
+        print(jsonDecode(response.body)); // buat cek apakah udh berhasil, jangan lupa diapus
         List<dynamic> data = jsonDecode(response.body);
         setState(() {
           allUsers = data.map((user) => user as Map<String, dynamic>).toList();
@@ -38,36 +50,35 @@
       }
     }
 
-    Future<void> filterUsers() async{
+    Future<void> filterUsers() async{ // fungsi filter user berdasarkan preferensi
       SharedPreferences prefs = await SharedPreferences.getInstance(); // ngambil data preferensi si user dari local storage terus dimasukin ke setiap variable
       String preferredGender = prefs.getString('gender') ?? '';
-      String preferredLocation = prefs.getString('location') ?? '';
       String preferredMatkul = prefs.getString('matkul') ?? '';
       String preferredRole = prefs.getString('role') ?? '';
       String preferredAcademicLevel = prefs.getString('academicLevel') ?? '';
       String preferredStudyPlace = prefs.getString('studyPlace') ?? '';
       String preferredLearningType = prefs.getString('learningType') ?? '';
-
       setState(() {
         filteredUsers = allUsers.where((user) {
-          bool matchesGender = preferredGender.isEmpty || user['gender'] == preferredGender;
-          bool matchesLocation = preferredLocation.isEmpty || user['location'] == preferredLocation;
-          bool matchesRole = preferredRole.isEmpty || user['role'] == preferredRole;
-          bool matchesAcademicLevel = preferredAcademicLevel.isEmpty || user['academicLevel'] == preferredAcademicLevel;
-          bool matchesStudyPlace = preferredStudyPlace.isEmpty || user['studyPlace'] == preferredStudyPlace;
-          bool matchesLearningType = preferredLearningType.isEmpty || user['learningType'] == preferredLearningType;
-          bool matchesMatkul = preferredMatkul.isEmpty || user['matkul'] == preferredMatkul;
-
-          return matchesGender && matchesLocation && matchesRole && matchesAcademicLevel && matchesStudyPlace && matchesLearningType && matchesMatkul;
+          bool matchesGender = user['gender'] == preferredGender || preferredGender.isEmpty || user['gender'] == null;
+          bool matchesRole = user['role'] == preferredRole || preferredRole.isEmpty || user['role'] == null;
+          bool matchesAcademicLevel = user['academicLevel'] == preferredAcademicLevel || preferredAcademicLevel.isEmpty || user['academicLevel'] == null;
+          bool matchesStudyPlace = user['studyPlace'] == preferredStudyPlace || preferredStudyPlace.isEmpty || user['studyPlace'] == null;
+          bool matchesLearningType = user['learningType'] == preferredLearningType || preferredLearningType.isEmpty || user['learningType'] == null;
+          bool matchesMatkul = user['matkul'] == preferredMatkul || preferredMatkul.isEmpty || user['matkul'] == null;
+          return matchesGender && matchesRole && matchesAcademicLevel && matchesStudyPlace && matchesLearningType && matchesMatkul;
         }).toList();
-        if (filteredUsers.isEmpty){
-          filteredUsers = allUsers;
+        print('Filtered users: $filteredUsers');
+        if (filteredUsers.isEmpty) {
+          setState(() {
+            filteredUsers = allUsers;
+          });
+        } else {
+          setState(() {
+            filteredUsers = filteredUsers;
+          });
         }
-        setState(() {
-          filteredUsers = filteredUsers;
-        });
       });
-
     }
 
     int _selectedIndex = 1; // Initial index of the BottomNavigationBar
@@ -84,7 +95,7 @@
       } else if (index == 2) {
         Navigator.push(
           context,
-          MaterialPageRoute(builder: (context) => SettingsPage()),
+          MaterialPageRoute(builder: (context) => const SettingsPage()),
         );
       } else if (index == 1) {
         Navigator.push(
@@ -109,7 +120,7 @@
         }
       });
 
-      Future.delayed(Duration(seconds: 1), () {
+      Future.delayed(const Duration(seconds: 1), () {
         setState(() {
           _showLikeIcon = false;
           _showDislikeIcon = false;
@@ -117,25 +128,26 @@
       });
     }
 
+    // widget nya
     @override
     Widget build(BuildContext context) {
       return Scaffold(
         body: isLoading
-            ? Center(child: CircularProgressIndicator())
-            : filteredUsers.isEmpty
-            ? Center(child: Text("No users found matching your preferences."))
+            ? const Center(child: CircularProgressIndicator())
             : Stack(
           children: [
             CardSwiper( // card nya
               controller: controller,
-              cardsCount: filteredUsers.length,
+              cardsCount: filteredUsers.isEmpty ? allUsers.length : filteredUsers.length, // card berdasarkan banyaknya alluser atau filtered user
+              numberOfCardsDisplayed: 1,
               cardBuilder: (context, index, percentThresholdX, percentThresholdY) {
-                final user = filteredUsers[index];
+                final user = filteredUsers.isEmpty ? allUsers[index] : filteredUsers[index]; // ini cek filteredUser empty atau ngga
+                                                                                            // kalo empty jadi tampilin allUser kalo ngga tampilin filteredUser
                 return Container(
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(16),
                     image: DecorationImage(
-                      image: NetworkImage(user['imageUrl']),
+                      image: NetworkImage('https://cdn.pixabay.com/photo/2023/08/24/19/58/saitama-8211499_1280.png'),
                       fit: BoxFit.cover,
                     ),
                   ),
@@ -146,18 +158,20 @@
                         children: [
                           Container(
                             decoration: BoxDecoration(
-                              color: Colors.black.withOpacity(0.5),
+                              color: const Color(0xFF00796B),
                               borderRadius: BorderRadius.circular(16),
                             ),
                             padding: const EdgeInsets.all(8.0),
                             child: ListTile(
                               title: Text(
-                                user['first_name'],
-                                style: TextStyle(color: Colors.white, fontWeight: FontWeight.w800),
+                                user['first_name'] ?? '',
+                                style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w800),
                               ),
                               subtitle: Text(
-                                'Gender: ${user['gender']} \nLocation: ${user['location']} \nRole: ${user['role']} \nBio: ${user['bio']} \nLearning Type: ${user['learningType']} \nStudy Place: ${user['studyPlace']} \nAcademic Level: ${user['academicLevel']}',
-                                style: TextStyle(color: Colors.white),
+                                'Gender: ${user['gender'] ?? ''} \nLocation: ${user['location'] ?? ''} '
+                                    '\nRole: ${user['role'] ?? ''} \nBio: ${user['bio'] ?? ''} \nLearning Type: ${user['learningType'] ?? ''} '
+                                    '\nStudy Place: ${user['studyPlace'] ?? ''} \nAcademic Level: ${user['academicLevel'] ?? ''}',
+                                style: const TextStyle(color: Colors.white),
                               ),
                             ),
                           ),
@@ -177,19 +191,19 @@
               },
             ),
             if (_showLikeIcon)
-              Center(
+              const Center(
                 child: Icon(
                   Icons.thumb_up,
                   color: Colors.green,
-                  size: 100,
+                  size: 1000,
                 ),
               ),
             if (_showDislikeIcon)
-              Center(
+              const Center(
                 child: Icon(
                   Icons.thumb_down,
                   color: Colors.red,
-                  size: 100,
+                  size: 1000,
                 ),
               ),
           ],
@@ -200,10 +214,10 @@
             child: GestureDetector(
               onTap: () {
                 Navigator.push(
-                  context, MaterialPageRoute(builder: (context) => ProfilePageContent()),
+                  context, MaterialPageRoute(builder: (context) => const ProfilePageContent()),
                 );
               },
-              child: CircleAvatar(
+              child: const CircleAvatar(
                 backgroundImage: NetworkImage('https://cdn.pixabay.com/photo/2023/08/24/19/58/saitama-8211499_1280.png'),
                 radius: 30,
               ),
@@ -211,7 +225,7 @@
           ),
           actions: <Widget>[
             IconButton(
-              icon: Icon(Icons.filter_alt_rounded, color: Colors.white),
+              icon: const Icon(Icons.filter_alt_rounded, color: Colors.white),
               onPressed: (){
                 Navigator.push(
                   context, MaterialPageRoute(builder: (context) => FilterPage()),
@@ -219,7 +233,7 @@
               },
             ),
           ],
-          backgroundColor: Color(0xFF00796B),
+          backgroundColor: const Color(0xFF00796B),
         ),
         backgroundColor: Color(0xFF009688),
         bottomNavigationBar: BottomNavigationBar(
