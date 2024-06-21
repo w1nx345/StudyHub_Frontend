@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:learn_hub/pages/filter_page.dart';
+import 'package:learn_hub/pages/likedyou_page.dart';
 import 'package:learn_hub/pages/profile_page.dart';
 import 'package:learn_hub/pages/chatlist_page.dart';
 import 'package:learn_hub/pages/settings_page.dart';
@@ -18,6 +19,7 @@ class SearchPage extends StatefulWidget {
 class _SearchPageState extends State<SearchPage> {
   List<Map<String, dynamic>> allUsers = []; // buat menampung semua data user yang diambil dari database
   List<Map<String, dynamic>> filteredUsers = []; // menampung data user yang sudah di filter berdasarkan preferensi kita
+  List<Map<String, dynamic>> viewedUsers = []; // nampung user yang sudah di view / dipilih
   bool isLoading = true;
   final storage = const FlutterSecureStorage();
   String? userId; // nampung id si user
@@ -72,8 +74,20 @@ class _SearchPageState extends State<SearchPage> {
     });
   }
 
-  Future<void> likeUser() async{
+  Future<void> likeUser(String likedId) async{
     final likerId = await storage.read(key: "id");
+    final response = await http.post(Uri.parse('http://10.0.2.2:8000/like/'),
+      headers: {'Content-Type': 'application/json'},
+      body: json.encode({
+        'from_user': likerId,
+        'to_user': likedId
+      }),
+    );
+    if (response.statusCode == 201){
+      throw Exception('Liked the user!');
+    }else{
+      throw Exception('Not like the user :(');
+    }
   }
 
   int _selectedIndex = 1; // Initial index of the BottomNavigationBar
@@ -95,23 +109,37 @@ class _SearchPageState extends State<SearchPage> {
           context,
           MaterialPageRoute(builder: (context) => SearchPage())
       );
+    } else if (index == 3){
+      Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => LikedYouPage())
+      );
     }
 
     setState(() {
       _selectedIndex = index;
     });
   }
-  void _handleSwipe() {
+  int indexCurrent = 0;
+  void _handleSwipe(CardSwiperDirection direction, String likedId) {
     setState(() {
       if (filteredUsers.isNotEmpty) {
-        filteredUsers.removeAt(0); // remove data user yang dipilih// jika setelah user di-remove list filteredUsers kosong,// maka ganti list ke all
-      } else {
-        if (allUsers.isNotEmpty) {
-          allUsers.removeAt(0);
-        }
+        final user = filteredUsers.removeAt(0);
+        viewedUsers.add(user);
+        allUsers.removeWhere((u) => u['id'] == user['id']);
+      } else if (allUsers.isNotEmpty) {
+        final user = allUsers.removeAt(indexCurrent);
+        viewedUsers.add(user);
+      }
+      if (indexCurrent >= allUsers.length) {
+        indexCurrent = allUsers.length - 1;
       }
     });
+    if (direction == CardSwiperDirection.right) {
+      likeUser(likedId.toString());
+    }
   }
+
   ImageProvider _imageFromFilePath(String? filePath) { // buat nentuin apakah si user ini punya path untuk profile picture atau tidak
     if (filePath == null) { //user ga punya profile picture, jadi pake default
       return NetworkImage('https://cdn.pixabay.com/photo/2023/08/24/19/58/saitama-8211499_1280.png');
@@ -125,7 +153,7 @@ class _SearchPageState extends State<SearchPage> {
     return Scaffold(
       body: isLoading
           ? const Center(child: CircularProgressIndicator())
-          :allUsers.isEmpty ? const Center(child: Text('No users found'))
+          :(allUsers.isEmpty && filteredUsers.isEmpty)? const Center(child: Text('Sorry that is all :)'))
           : Stack(
         children: [
           CardSwiper( // card nya
@@ -182,8 +210,11 @@ class _SearchPageState extends State<SearchPage> {
         right: 20,
         child: FloatingActionButton( // button like
           onPressed: () {
-            controller.swipe(CardSwiperDirection.right);
-            _handleSwipe();
+            if (filteredUsers.isNotEmpty) { // kalo ga empty, berarti yg dilike yg di filteredUsers
+              _handleSwipe(CardSwiperDirection.right, filteredUsers[0]['id'].toString());
+            } else if (allUsers.isNotEmpty) { // yang dilike yang di allUsers
+              _handleSwipe(CardSwiperDirection.right, allUsers[indexCurrent]['id'].toString());
+            }
           },
           child: Icon(Icons.thumb_up, color: Colors.white),
           backgroundColor: Colors.green,
@@ -194,8 +225,11 @@ class _SearchPageState extends State<SearchPage> {
         left: 20,
         child: FloatingActionButton( // button dislike
           onPressed: () {
-            controller.swipe(CardSwiperDirection.left);
-            _handleSwipe();
+            if (filteredUsers.isNotEmpty) { // ga ngaruh tapi harus begini biar ga error
+              _handleSwipe(CardSwiperDirection.left, filteredUsers[0]['id'].toString());
+            } else if (allUsers.isNotEmpty) { // ga ngaruh apa-apa tapi harus beigni biar ga error
+              _handleSwipe(CardSwiperDirection.left, allUsers[indexCurrent]['id'].toString());
+            }
           },
           child: Icon(Icons.thumb_down_rounded, color: Colors.white),
           backgroundColor: Colors.red,
@@ -245,6 +279,10 @@ class _SearchPageState extends State<SearchPage> {
           BottomNavigationBarItem(
             icon: Icon(Icons.settings, color: Colors.white),
             label: '',
+          ),
+          BottomNavigationBarItem(
+              icon: Icon(Icons.thumb_up),
+              label: '',
           ),
         ],
         currentIndex: _selectedIndex,
