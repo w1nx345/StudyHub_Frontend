@@ -4,103 +4,71 @@
   import 'package:learn_hub/pages/chatlist_page.dart';
   import 'package:learn_hub/pages/settings_page.dart';
   import 'package:flutter_card_swiper/flutter_card_swiper.dart';
-
+  import 'package:http/http.dart' as http;
+  import 'package:learn_hub/users/users_model.dart';
+  import 'dart:convert';
+  import 'package:shared_preferences/shared_preferences.dart';
   class SearchPage extends StatefulWidget {
     @override
     State<SearchPage> createState() => _SearchPageState();
   }
 
   class _SearchPageState extends State<SearchPage> {
-    List<Widget> cards = [
-      Container(
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(16),
-          image: DecorationImage(
-            image: NetworkImage('https://upload.wikimedia.org/wikipedia/id/6/6b/Frierencharacter.png'), // Your image URL here
-            fit: BoxFit.cover,
-          ),
-        ),
-        child: Stack(
-          children: [
-            Column(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: [
-                Container(
-                  decoration: BoxDecoration(
-                    color: Colors.black.withOpacity(0.5), // Black transparent background
-                    borderRadius: BorderRadius.circular(16),
-                  ),
-                  padding: const EdgeInsets.all(8.0), // Add padding here
-                  child: ListTile(
-                    title: Text('Frieren', style: TextStyle(color: Colors.white, fontWeight: FontWeight.w800,)), // Adjust text color if needed
-                    subtitle: Text('Gender: Female \nLocation: Ngawi  \nRole: Someone To Teach \nBio: Mencari Pahlawan Gacor \nLearning Type: Naturalistic Learner \nStudy Place: Park  \nAcademic Level: Doctorate', style: TextStyle(color: Colors.white)), // Adjust text color if needed
-                  ),
-                ),
-              ],
-            ),
-          ],
-        ),
-      ),
-      Container(
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(16),
-          image: DecorationImage(
-            image: NetworkImage('https://static.wikia.nocookie.net/onepunchman/images/5/5b/Genos_Profile.png'), // Your image URL here
-            fit: BoxFit.cover,
-          ),
-        ),
-        child: Stack(
-          children: [
-            Column(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: [
-                Container(
-                  decoration: BoxDecoration(
-                    color: Colors.black.withOpacity(0.5), // Black transparent background
-                    borderRadius: BorderRadius.circular(16),
-                  ),
-                  padding: const EdgeInsets.all(8.0), // Add padding here
-                  child: ListTile(
-                    title: Text('Genos', style: TextStyle(color: Colors.white, fontWeight: FontWeight.w800,)), // Adjust text color if needed
-                    subtitle: Text('Gender: Male \nLocation: Tegal  \nRole: Someone To Learn \nBio: nyari guru bertarung nih \nLearning Type: Visual Learner \nStudy Place: Cafe  \nAcademic Level: Master', style: TextStyle(color: Colors.white)), // Adjust text color if needed
-                  ),
-                ),
-              ],
-            ),
-          ],
-        ),
-      ),
-      Container(
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(16),
-          image: DecorationImage(
-            image: NetworkImage('https://static.wikia.nocookie.net/naruto/images/8/82/Obito_Second_Transformation.png'), // Your image URL here
-            fit: BoxFit.cover,
-          ),
-        ),
-        child: Stack(
-          children: [
-            Column(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: [
-                Container(
-                  decoration: BoxDecoration(
-                    color: Colors.black.withOpacity(0.5), // Black transparent background
-                    borderRadius: BorderRadius.circular(16),
-                  ),
-                  padding: const EdgeInsets.all(8.0), // Add padding here
-                  child: ListTile(
-                    title: Text('Obito', style: TextStyle(color: Colors.white, fontWeight: FontWeight.w800,)), // Adjust text color if needed
-                    subtitle: Text('Gender: Male \nLocation: Jakarta Barat  \nRole: A Study Mate \nBio: butuh teman belajar bang \nLearning Type: Read/Write Learner \nStudy Place: Call  \nAcademic Level: Undergraduate', style: TextStyle(color: Colors.white)), // Adjust text color if needed
-                  ),
-                ),
-              ],
-            ),
-          ],
-        ),
-      ),
-      // Add more cards as needed
-    ];
+    List<Map<String, dynamic>> allUsers = []; // buat menampung semua data user yang diambil dari database
+    List<Map<String, dynamic>> filteredUsers = []; // menampung data user yang sudah di filter berdasarkan preferensi kita
+    bool isLoading = true;
+
+    @override
+    void initState() {
+      super.initState();
+      fetchAllUser();
+    }
+
+    Future<void> fetchAllUser() async { // function buat http get request buat ngambil semua data user
+      final response = await http.get(Uri.parse('http://10.0.2.2:8000/search/'));
+      if (response.statusCode == 200){
+        List<dynamic> data = jsonDecode(response.body);
+        setState(() {
+          allUsers = data.map((user) => user as Map<String, dynamic>).toList();
+          isLoading = false;
+          filterUsers();
+        });
+      } else{
+        throw Exception('Failed to load users');
+      }
+    }
+
+    Future<void> filterUsers() async{
+      SharedPreferences prefs = await SharedPreferences.getInstance(); // ngambil data preferensi si user dari local storage terus dimasukin ke setiap variable
+      String preferredGender = prefs.getString('gender') ?? '';
+      String preferredLocation = prefs.getString('location') ?? '';
+      String preferredMatkul = prefs.getString('matkul') ?? '';
+      String preferredRole = prefs.getString('role') ?? '';
+      String preferredAcademicLevel = prefs.getString('academicLevel') ?? '';
+      String preferredStudyPlace = prefs.getString('studyPlace') ?? '';
+      String preferredLearningType = prefs.getString('learningType') ?? '';
+
+      setState(() {
+        filteredUsers = allUsers.where((user) {
+          bool matchesGender = preferredGender.isEmpty || user['gender'] == preferredGender;
+          bool matchesLocation = preferredLocation.isEmpty || user['location'] == preferredLocation;
+          bool matchesRole = preferredRole.isEmpty || user['role'] == preferredRole;
+          bool matchesAcademicLevel = preferredAcademicLevel.isEmpty || user['academicLevel'] == preferredAcademicLevel;
+          bool matchesStudyPlace = preferredStudyPlace.isEmpty || user['studyPlace'] == preferredStudyPlace;
+          bool matchesLearningType = preferredLearningType.isEmpty || user['learningType'] == preferredLearningType;
+          bool matchesMatkul = preferredMatkul.isEmpty || user['matkul'] == preferredMatkul;
+
+          return matchesGender && matchesLocation && matchesRole && matchesAcademicLevel && matchesStudyPlace && matchesLearningType && matchesMatkul;
+        }).toList();
+        if (filteredUsers.isEmpty){
+          filteredUsers = allUsers;
+        }
+        setState(() {
+          filteredUsers = filteredUsers;
+        });
+      });
+
+    }
 
     int _selectedIndex = 1; // Initial index of the BottomNavigationBar
     bool _showLikeIcon = false;
@@ -152,12 +120,53 @@
     @override
     Widget build(BuildContext context) {
       return Scaffold(
-        body: Stack(
+        body: isLoading
+            ? Center(child: CircularProgressIndicator())
+            : filteredUsers.isEmpty
+            ? Center(child: Text("No users found matching your preferences."))
+            : Stack(
           children: [
-            CardSwiper(
+            CardSwiper( // card nya
               controller: controller,
-              cardsCount: cards.length,
-              cardBuilder: (context, index, percentThresholdX, percentThresholdY) => cards[index],
+              cardsCount: filteredUsers.length,
+              cardBuilder: (context, index, percentThresholdX, percentThresholdY) {
+                final user = filteredUsers[index];
+                return Container(
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(16),
+                    image: DecorationImage(
+                      image: NetworkImage(user['imageUrl']),
+                      fit: BoxFit.cover,
+                    ),
+                  ),
+                  child: Stack( // stack cardnya
+                    children: [
+                      Column(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: [
+                          Container(
+                            decoration: BoxDecoration(
+                              color: Colors.black.withOpacity(0.5),
+                              borderRadius: BorderRadius.circular(16),
+                            ),
+                            padding: const EdgeInsets.all(8.0),
+                            child: ListTile(
+                              title: Text(
+                                user['first_name'],
+                                style: TextStyle(color: Colors.white, fontWeight: FontWeight.w800),
+                              ),
+                              subtitle: Text(
+                                'Gender: ${user['gender']} \nLocation: ${user['location']} \nRole: ${user['role']} \nBio: ${user['bio']} \nLearning Type: ${user['learningType']} \nStudy Place: ${user['studyPlace']} \nAcademic Level: ${user['academicLevel']}',
+                                style: TextStyle(color: Colors.white),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                );
+              },
               onSwipe: (index, direction, _) async {
                 if (direction == CardSwiperDirection.right) {
                   _showPopupIcon(true);
