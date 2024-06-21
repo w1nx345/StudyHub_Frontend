@@ -90,8 +90,8 @@ class _FilterPageState extends State<FilterPage> {
 
   final List<String> roles = [
     "A Study Mate",
-    "Someone To Teach",
-    "Someone To Learn",
+    "Someone to Teach",
+    "Someone to Learn",
   ];
 
   final List<String> subjects = [
