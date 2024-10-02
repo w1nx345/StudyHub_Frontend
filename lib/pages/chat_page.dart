@@ -1,12 +1,13 @@
 import 'dart:convert';
 import 'dart:math';
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
 import 'package:learn_hub/pages/profile_page.dart';
 import 'package:learn_hub/pages/filter_page.dart';
 import 'package:flutter_chat_types/flutter_chat_types.dart' as types;
 import 'package:flutter_chat_ui/flutter_chat_ui.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:bubble/bubble.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 String randomString() {
   final random = Random.secure();
@@ -15,7 +16,9 @@ String randomString() {
 }
 
 class ChatPage extends StatefulWidget {
-  const ChatPage({super.key});
+  final int convoId; // Tambahkan convoId sebagai parameter
+
+  const ChatPage({super.key, required this.convoId}); // Simpan convoId sebagai field
 
   @override
   State<ChatPage> createState() => _ChatPageState();
@@ -24,6 +27,64 @@ class ChatPage extends StatefulWidget {
 class _ChatPageState extends State<ChatPage> {
   final List<types.Message> _messages = [];
   final _user = const types.User(id: '82091008-a484-4a89-ae75-a22bf8d6f3ac');
+  final storage = const FlutterSecureStorage();
+  String? userId;
+
+  @override
+  void initState() {
+    super.initState();
+    getUserId();
+    _getMessagesFromBackend();
+  }
+
+  Future<void> _getMessagesFromBackend() async {
+    final response = await http.get(
+      Uri.parse('http://10.0.2.2:8000/message/list?convo_id=${widget.convoId}'),
+      headers: {'Content-Type': 'application/json'},
+    );
+
+    if (response.statusCode == 200) {
+      final List<dynamic> data = jsonDecode(response.body);
+      final List<types.Message> messages = data.map((item) {
+        return types.TextMessage(
+          author: types.User(id: item['sender'].toString()),
+          createdAt: DateTime.parse(item['timestamp']).millisecondsSinceEpoch,
+          id: item['id'].toString(),
+          text: item['text'],
+        );
+      }).toList();
+
+      setState(() {
+        _messages.clear();
+        _messages.addAll(messages);
+      });
+    } else {
+      print('Gagal mendapatkan pesan: ${response.body}');
+    }
+  }
+
+  Future<void> _sendMessageToBackend(types.TextMessage message) async {
+    final response = await http.post(
+      Uri.parse('http://10.0.2.2:8000/message/'),
+      headers: {'Content-Type': 'application/json'},
+      body: jsonEncode({
+        'convo': widget.convoId, // pake convoId dari yang diambil dari page list
+        'sender': userId,
+        'text': message.text,
+        'timestamp': DateTime.now().toIso8601String(),
+      }),
+    );
+
+    if (response.statusCode == 201) {
+      print('Pesan berhasil dikirim');
+    } else {
+      print('Gagal mengirim pesan: ${response.body}');
+    }
+  }
+
+  Future<void> getUserId() async {
+    userId = await storage.read(key: 'id');
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -52,7 +113,8 @@ class _ChatPageState extends State<ChatPage> {
             icon: const Icon(Icons.filter_alt_rounded, color: Colors.white),
             onPressed: () {
               Navigator.push(
-                context, MaterialPageRoute(builder: (context) =>  FilterPage()),
+                context,
+                MaterialPageRoute(builder: (context) => FilterPage()),
               );
             },
           ),
@@ -65,9 +127,9 @@ class _ChatPageState extends State<ChatPage> {
             color: const Color(0xFF00796B),
             padding: const EdgeInsets.all(5),
             child: Row(
-              children:[
+              children: [
                 IconButton(
-                  icon: const Icon(Icons.arrow_back, color: Colors.white, size: 30,),
+                  icon: const Icon(Icons.arrow_back, color: Colors.white, size: 30),
                   onPressed: () {
                     Navigator.pop(context);
                   },
@@ -173,5 +235,6 @@ class _ChatPageState extends State<ChatPage> {
     );
 
     _addMessage(textMessage);
+    _sendMessageToBackend(textMessage); // Kirim pesan ke backend
   }
 }

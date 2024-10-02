@@ -1,11 +1,56 @@
 import 'package:flutter/material.dart';
-import 'package:learn_hub/pages/filter_page.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
 import 'package:learn_hub/pages/profile_page.dart';
-import 'package:learn_hub/pages/search_page.dart';
-import 'package:learn_hub/pages/settings_page.dart';
+import 'package:learn_hub/pages/filter_page.dart';
 import 'package:learn_hub/pages/chat_page.dart';
+import 'package:timeago/timeago.dart' as timeago;
 
-class ChatListPage extends StatelessWidget {
+class ChatListPage extends StatefulWidget {
+  @override
+  _ChatListPageState createState() => _ChatListPageState();
+}
+
+class _ChatListPageState extends State<ChatListPage> {
+  List<dynamic> convoList = [];
+  final storage = FlutterSecureStorage();
+  String? userId;
+
+
+  Future<void> fetchConversations(String userId) async {
+    final response = await http.get(Uri.parse('http://10.0.2.2:8000/convo/list?id=$userId'));
+
+    if (response.statusCode == 200) {
+      if (response.body.isEmpty) {
+        setState(() {
+          convoList = [];  // Jika respons kosong, set convoList sebagai list kosong
+        });
+        return;
+      }
+      setState(() {
+        convoList = json.decode(response.body);  // Pastikan setState digunakan untuk memperbarui UI
+        print(convoList);  // Tambahkan ini untuk melihat apakah convoList diisi
+      });
+    } else {
+      throw Exception('Failed to load conversations');
+    }
+  }
+
+
+  @override
+  void initState() {
+    super.initState();
+    getUserId();
+  }
+
+  Future<void> getUserId() async {
+    userId = await storage.read(key: 'id');
+    if (userId != null) {
+      fetchConversations(userId!);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -76,39 +121,31 @@ class ChatListPage extends StatelessWidget {
               ),
             ),
             Expanded(
-              child: ListView(
-                children: <Widget>[
-                  ChatItem(
-                    avatar: 'https://cdn.myanimelist.net/images/characters/5/525108.jpg',
-                    name: 'Mr. Stark',
-                    message: 'Hm?... <(=~=)>',
-                    time: 'Sent 1m ago',
+              child: ListView.builder(
+                itemCount: convoList.length,
+                itemBuilder: (context, index) {
+                  var convo = convoList[index];
+                  // Mengambil waktu dari pesan terakhir
+                  return ChatItem(
+                    avatar: convo['profilePicture'] ?? '',
+                    name: convo['first_name'] ?? 'Unknown',
+                    message: convo['last_message']['text'] ?? 'No message',
+                    time: convo['last_message']['timestamp'] != null
+                        ? timeago.format(DateTime.parse(convo['last_message']['timestamp']))
+                        : 'No messages yet',
+
                     onTap: () {
                       Navigator.push(
                         context,
-                        MaterialPageRoute(builder: (context) => ChatPage()),
+                        MaterialPageRoute(
+                          builder: (context) => ChatPage(
+                            convoId: convo['convo_id'], // Mengirim convo_id ke ChatPage
+                          ),
+                        ),
                       );
                     },
-                  ),
-                  ChatItem(
-                    avatar: 'https://cdn.idntimes.com/content-images/community/2024/03/magen-43da29a867d49c1f351ac6b665d26419-a2f4c889f446916252d865ae01a384c8.jpg',
-                    name: 'Übel',
-                    message: 'Let\'s play',
-                    time: 'Sent 3h ago',
-                  ),
-                  ChatItem(
-                    avatar: 'https://static.wikia.nocookie.net/frieren/images/3/30/Serie_anime_portrait.png',
-                    name: 'Serie',
-                    message: 'Sure',
-                    time: 'Sent 10m ago',
-                  ),
-                  ChatItem(
-                    avatar: 'https://static.wikia.nocookie.net/frieren/images/6/65/Fern_anime_portrait.png',
-                    name: 'Fern',
-                    message: 'I put it on the table',
-                    time: 'Sent 10m ago',
-                  ),
-                ],
+                  );
+                },
               ),
             ),
             BottomNavigationBar(
@@ -168,7 +205,7 @@ class ChatItem extends StatelessWidget {
         child: Row(
           children: <Widget>[
             CircleAvatar(
-              backgroundImage: NetworkImage(avatar),
+              backgroundImage: NetworkImage(avatar), // Fixing the error by using NetworkImage
               radius: 30.0,
             ),
             SizedBox(width: 20.0),
