@@ -16,7 +16,7 @@ String randomString() {
 }
 
 class ChatPage extends StatefulWidget {
-  final int convoId; // Tambahkan convoId sebagai parameter
+  final int convoId;
 
   const ChatPage({super.key, required this.convoId}); // Simpan convoId sebagai field
 

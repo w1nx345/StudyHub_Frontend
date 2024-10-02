@@ -29,8 +29,7 @@ class _ChatListPageState extends State<ChatListPage> {
         return;
       }
       setState(() {
-        convoList = json.decode(response.body);  // Pastikan setState digunakan untuk memperbarui UI
-        print(convoList);  // Tambahkan ini untuk melihat apakah convoList diisi
+        convoList = json.decode(response.body);
       });
     } else {
       throw Exception('Failed to load conversations');
