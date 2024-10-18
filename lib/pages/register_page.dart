@@ -3,6 +3,7 @@ import 'package:learn_hub/pages/login_page.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+
 class SignUpPage extends StatefulWidget {
   const SignUpPage({super.key, required this.title});
 
@@ -13,152 +14,169 @@ class SignUpPage extends StatefulWidget {
 }
 
 class _SignUpState extends State<SignUpPage> {
-  final _dateController = TextEditingController();
-  final emailController = TextEditingController();
-  final passwordController = TextEditingController();
+  final _usernameController = TextEditingController();
+  final _emailController = TextEditingController();
+  final _mobileNumberController = TextEditingController();
+  final _passwordController = TextEditingController();
   final storage = FlutterSecureStorage();
-  Future<void> _dateTime() async {
-    DateTime? _picked = await showDatePicker(
-      context: context,
-      initialDate: DateTime.now(),
-      firstDate: DateTime(1945),
-      lastDate: DateTime(2045),
-    );
 
-    if (_picked != null) {
-      setState(() {
-        _dateController.text = _picked.toString().split(" ")[0];
-      });
-    }
-  }
-  void userRegister(BuildContext context) async{
-    String enteredEmail = emailController.text;
-    String enteredPassword = passwordController.text;
-    String enteredDOB = _dateController.text;
+  void userRegister(BuildContext context) async {
+    String enteredUsername = _usernameController.text;
+    String enteredEmail = _emailController.text;
+    String enteredMobileNumber = _mobileNumberController.text;
+    String enteredPassword = _passwordController.text;
 
-    try{
+    try {
       final response = await http.post(
         Uri.parse('http://10.0.2.2:8000/register/'),
         headers: <String, String>{
           'Content-Type': 'application/json; charset=UTF-8',
         },
-          body: jsonEncode(<String, String>{
+        body: jsonEncode(<String, String>{
+          'username': enteredUsername,
           'email': enteredEmail,
+          'mobile_number': enteredMobileNumber,
           'password': enteredPassword,
-          'birth_date': enteredDOB,
-          }),
+        }),
       );
       if (response.statusCode == 201) {
         final jsonData = jsonDecode(response.body);
         final message = jsonData['message'];
         print(message);
-        Navigator.push( // ke login page klo berhasil register
+        Navigator.push(
           context,
           MaterialPageRoute(
             builder: (context) => LoginPage(),
           ),
         );
       } else {
-        print('Failed to register'); // klo bukan 201 responsenya print ini
+        print('Failed to register');
       }
-    } catch (e){
-      print('Error signup: $e'); // ini klo ga bisa connect ke server backend
+    } catch (e) {
+      print('Error signup: $e');
     }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFF00796B),
+      backgroundColor: Colors.white,
       body: Center(
         child: SingleChildScrollView(
           padding: const EdgeInsets.only(bottom: 152.0),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
-              Image.asset('lib/images/Study Hub Logo.png'),
+              const Text(
+                'Sign up',
+                style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+              ),
               const SizedBox(height: 20),
               Padding(
-                padding: EdgeInsets.all(16.0),
+                padding: const EdgeInsets.all(16.0),
                 child: Column(
                   children: [
                     TextField(
-                      controller: emailController,
-                      obscureText: false,
-                      style: TextStyle(color: Colors.white),
+                      controller: _usernameController,
+                      style: const TextStyle(color: Colors.black),
                       decoration: InputDecoration(
-                        labelText: 'E-mail :',
-                        labelStyle: TextStyle(
-                            color: Colors.white,
-                            fontFamily: "OpenSans-ExtraBold"),
+                        labelText: 'Username',
+                        labelStyle: const TextStyle(color: Colors.black),
                         enabledBorder: OutlineInputBorder(
-                          borderSide: BorderSide(color: Colors.white),
-                          borderRadius: BorderRadius.all(Radius.circular(20)),
+                          borderSide: const BorderSide(color: Colors.black),
+                          borderRadius: BorderRadius.circular(20),
                         ),
                         focusedBorder: OutlineInputBorder(
-                          borderSide: BorderSide(color: Colors.white),
-                          borderRadius: BorderRadius.all(Radius.circular(20)),
+                          borderSide: const BorderSide(color: Colors.black),
+                          borderRadius: BorderRadius.circular(20),
                         ),
                       ),
                     ),
-                    SizedBox(height: 10),
+                    const SizedBox(height: 10),
                     TextField(
-                      controller: _dateController,
-                      style: TextStyle(color: Colors.white),
+                      controller: _emailController,
+                      style: const TextStyle(color: Colors.black),
                       decoration: InputDecoration(
-                        labelText: 'Date of Birth :',
-                        labelStyle: TextStyle(
-                            color: Colors.white,
-                            fontFamily: "OpenSans-ExtraBold"),
-                        filled: false,
-                        prefixIcon:
-                        Icon(Icons.calendar_today, color: Colors.white),
+                        labelText: 'Email',
+                        labelStyle: const TextStyle(color: Colors.black),
                         enabledBorder: OutlineInputBorder(
-                          borderSide: BorderSide(color: Colors.white),
-                          borderRadius: BorderRadius.all(Radius.circular(20)),
+                          borderSide: const BorderSide(color: Colors.black),
+                          borderRadius: BorderRadius.circular(20),
                         ),
                         focusedBorder: OutlineInputBorder(
-                          borderSide: BorderSide(color: Colors.white),
-                          borderRadius: BorderRadius.all(Radius.circular(20)),
+                          borderSide: const BorderSide(color: Colors.black),
+                          borderRadius: BorderRadius.circular(20),
                         ),
                       ),
-                      readOnly: true,
-                      onTap: () {
-                        _dateTime();
-                      },
                     ),
-                    SizedBox(height: 10),
+                    const SizedBox(height: 10),
                     TextField(
-                      controller: passwordController,
-                      style: TextStyle(color: Colors.white),
+                      controller: _mobileNumberController,
+                      style: const TextStyle(color: Colors.black),
+                      decoration: InputDecoration(
+                        labelText: 'Mobile Number',
+                        labelStyle: const TextStyle(color: Colors.black),
+                        enabledBorder: OutlineInputBorder(
+                          borderSide: const BorderSide(color: Colors.black),
+                          borderRadius: BorderRadius.circular(20),
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          borderSide: const BorderSide(color: Colors.black),
+                          borderRadius: BorderRadius.circular(20),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 10),
+                    TextField(
+                      controller: _passwordController,
+                      style: const TextStyle(color: Colors.black),
                       obscureText: true,
                       decoration: InputDecoration(
-                        labelText: 'Password :',
-                        labelStyle: TextStyle(
-                            color: Colors.white,
-                            fontFamily: "OpenSans-ExtraBold"),
+                        labelText: 'Password',
+                        labelStyle: const TextStyle(color: Colors.black),
                         enabledBorder: OutlineInputBorder(
-                          borderSide: BorderSide(color: Colors.white),
-                          borderRadius: BorderRadius.all(Radius.circular(20)),
+                          borderSide: const BorderSide(color: Colors.black),
+                          borderRadius: BorderRadius.circular(20),
                         ),
                         focusedBorder: OutlineInputBorder(
-                          borderSide: BorderSide(color: Colors.white),
-                          borderRadius: BorderRadius.all(Radius.circular(20)),
+                          borderSide: const BorderSide(color: Colors.black),
+                          borderRadius: BorderRadius.circular(20),
                         ),
                       ),
                     ),
-                    SizedBox(height: 10),
+                    const SizedBox(height: 10),
                     ElevatedButton(
                       onPressed: () {
                         userRegister(context);
                       },
-                      child: const Text("Join Now"),
+                      child: const Text("Continue"),
                       style: ButtonStyle(
-                        backgroundColor: MaterialStateProperty.all(Color(0xFF009688)),
+                        backgroundColor: MaterialStateProperty.all(Colors.green),
                         foregroundColor: MaterialStateProperty.all(Colors.white),
                       ),
                     ),
-                    SizedBox(height: 20),
+                    const SizedBox(height: 20),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        const Text('Have an account?'),
+                        const SizedBox(width: 5),
+                        TextButton(
+                          onPressed: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => LoginPage(),
+                              ),
+                            );
+                          },
+                          child: const Text('Sign in'),
+                          style: TextButton.styleFrom(
+                            foregroundColor: Colors.green,
+                          ),
+                        ),
+                      ],
+                    ),
                   ],
                 ),
               ),

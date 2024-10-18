@@ -5,6 +5,7 @@ import 'package:learn_hub/pages/login_page.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:learn_hub/pages/search_page.dart';
+import 'package:learn_hub/pages/welcome_Page.dart';
 
 class SplashScreen extends StatefulWidget {
   @override
@@ -48,14 +49,14 @@ class _SplashScreenState extends State<SplashScreen> {
         } else { // refresh tokennya ga valid juga
           Navigator.pushReplacement(
             context,
-            MaterialPageRoute(builder: (context) => LoginPage()),
+            MaterialPageRoute(builder: (context) => Welcome1()),
           );
         }
       }
     } else { // ini kalo ga ada token dari awal
       Navigator.pushReplacement(
         context,
-        MaterialPageRoute(builder: (context) => LoginPage()),
+        MaterialPageRoute(builder: (context) => Welcome1()),
       );
     }
   }
@@ -72,7 +73,7 @@ class _SplashScreenState extends State<SplashScreen> {
     @override
     Widget build(BuildContext context) {
       return Scaffold(
-        backgroundColor: const Color(0xFF00796B),
+        backgroundColor: const Color(0xF5F5F5FF),
         body: Center(
           child: Image.asset(
             'lib/images/Study Hub Logo.png',
@@ -82,4 +83,4 @@ class _SplashScreenState extends State<SplashScreen> {
         ),
       );
     }
-  }
+ }

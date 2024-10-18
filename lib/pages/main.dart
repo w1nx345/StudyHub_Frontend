@@ -8,6 +8,8 @@ import 'package:learn_hub/pages/settings_page.dart';
 import 'package:learn_hub/pages/profile_page.dart';
 import 'package:learn_hub/pages/search_page.dart';
 import 'package:learn_hub/pages/register_page.dart';
+import 'package:learn_hub/pages/welcome_Page.dart';
+
 void main() {
   runApp(const MyApp());
 }
