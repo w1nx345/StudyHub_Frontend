@@ -1,14 +1,12 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
-import 'package:learn_hub/components/my_button.dart';
-import 'package:learn_hub/components/my_textfield.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart' as http;
 
 class LoginPage extends StatelessWidget {
   LoginPage({super.key});
 
-  final storage = FlutterSecureStorage();
+  final storage = const FlutterSecureStorage();
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
 
@@ -59,7 +57,7 @@ class LoginPage extends StatelessWidget {
           children: [
             const SizedBox(height: 50),
             // Header text
-            Text(
+            const Text(
               'Login or sign up',
               style: TextStyle(
                 fontSize: 24,
@@ -69,44 +67,80 @@ class LoginPage extends StatelessWidget {
             ),
             const SizedBox(height: 20),
 
-            // Email text field
-            MyTextField(
-              controller: emailController,
-              obscureText: false,
-              width: 300,
-              hintText: 'Username, email or mobile number',
-              hintStyle: const TextStyle(color: Colors.grey),
+            // Email text field with reduced width
+            SizedBox(
+              width: 350, // Adjust this width to make the textbox smaller
+              child: TextField(
+                controller: emailController,
+                style: const TextStyle(color: Colors.black),
+                decoration: InputDecoration(
+                  labelText: 'Username, email or mobile number',
+                  labelStyle: const TextStyle(color: Colors.black),
+                  enabledBorder: OutlineInputBorder(
+                    borderSide: const BorderSide(color: Colors.black),
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderSide: const BorderSide(color: Colors.black),
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                ),
+              ),
             ),
             const SizedBox(height: 10),
 
-            // Password text field
-            MyTextField(
-              controller: passwordController,
-              obscureText: true,
-              width: 300,
-              hintText: 'Password',
-              hintStyle: const TextStyle(color: Colors.grey),
+            // Password text field with reduced width
+            SizedBox(
+              width: 350, // Adjust this width to make the textbox smaller
+              child: TextField(
+                controller: passwordController,
+                style: const TextStyle(color: Colors.black),
+                obscureText: true,
+                decoration: InputDecoration(
+                  labelText: 'Password',
+                  labelStyle: const TextStyle(color: Colors.black),
+                  enabledBorder: OutlineInputBorder(
+                    borderSide: const BorderSide(color: Colors.black),
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderSide: const BorderSide(color: Colors.black),
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                ),
+              ),
             ),
-            const SizedBox(height: 20),
+            const SizedBox(height: 10),
 
-            // Sign in button
-            MyButton(
-              onTap: () => signUserIn(context),
-              width: 300,
-              buttonText: 'Continue',
-              backgroundColor: Colors.green,
+            // Sign in button with increased size
+            SizedBox(
+              width: 125, // Adjust this width to make the button larger
+              height: 50,  // Adjust this height if you want a taller button
+              child: ElevatedButton(
+                onPressed: () {
+                  Navigator.pushNamed(context, '/search');
+                },
+                style: ButtonStyle(
+                  backgroundColor: MaterialStateProperty.all(Colors.green),
+                  foregroundColor: MaterialStateProperty.all(Colors.white),
+                  textStyle: MaterialStateProperty.all(
+                    const TextStyle(fontSize: 18), // Adjust font size if needed
+                  ),
+                ),
+                child: const Text("Login"),
+              ),
             ),
             const SizedBox(height: 20),
 
             // Alternative sign up option
-            Row(
+            const Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Expanded(
                   child: Divider(thickness: 1.5, color: Colors.black),
                 ),
                 Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                  padding: EdgeInsets.symmetric(horizontal: 10.0),
                   child: Text(
                     'Or',
                     style: TextStyle(color: Colors.black),
@@ -140,7 +174,7 @@ class LoginPage extends StatelessWidget {
                     height: 20,
                   ),
                   const SizedBox(width: 10),
-                  Text(
+                  const Text(
                     'Continue with Google',
                     style: TextStyle(
                       fontSize: 16,
@@ -151,7 +185,7 @@ class LoginPage extends StatelessWidget {
                 ],
               ),
             ),
-            const SizedBox(height: 20),
+            const SizedBox(height: 10),
 
             // Sign-up text
             Row(
@@ -170,7 +204,7 @@ class LoginPage extends StatelessWidget {
                   child: const Text(
                     'Sign Up',
                     style: TextStyle(
-                      color: Colors.blue,
+                      color: Colors.green,
                       fontWeight: FontWeight.bold,
                     ),
                   ),

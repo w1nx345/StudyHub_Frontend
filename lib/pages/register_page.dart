@@ -18,7 +18,7 @@ class _SignUpState extends State<SignUpPage> {
   final _emailController = TextEditingController();
   final _mobileNumberController = TextEditingController();
   final _passwordController = TextEditingController();
-  final storage = FlutterSecureStorage();
+  final storage = const FlutterSecureStorage();
 
   void userRegister(BuildContext context) async {
     String enteredUsername = _usernameController.text;
@@ -67,6 +67,14 @@ class _SignUpState extends State<SignUpPage> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
+              // Logo Study Hub di bagian atas
+              Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Image.asset(
+                  'lib/images/Study Hub Logo.png', // Ganti dengan path logo Anda
+                  width: 150, // Sesuaikan ukuran logo
+                ),
+              ),
               const Text(
                 'Sign up',
                 style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
@@ -149,18 +157,18 @@ class _SignUpState extends State<SignUpPage> {
                       onPressed: () {
                         userRegister(context);
                       },
-                      child: const Text("Continue"),
                       style: ButtonStyle(
                         backgroundColor: MaterialStateProperty.all(Colors.green),
                         foregroundColor: MaterialStateProperty.all(Colors.white),
                       ),
+                      child: const Text("Continue"),
                     ),
                     const SizedBox(height: 20),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         const Text('Have an account?'),
-                        const SizedBox(width: 5),
+                        const SizedBox(width: 1),
                         TextButton(
                           onPressed: () {
                             Navigator.push(
@@ -170,10 +178,10 @@ class _SignUpState extends State<SignUpPage> {
                               ),
                             );
                           },
-                          child: const Text('Sign in'),
                           style: TextButton.styleFrom(
                             foregroundColor: Colors.green,
                           ),
+                          child: const Text('Sign in'),
                         ),
                       ],
                     ),

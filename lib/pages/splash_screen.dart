@@ -1,20 +1,21 @@
 import 'dart:async';
 import 'dart:convert';
 import 'package:flutter/material.dart';
-import 'package:learn_hub/pages/login_page.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:learn_hub/pages/search_page.dart';
 import 'package:learn_hub/pages/welcome_Page.dart';
 
 class SplashScreen extends StatefulWidget {
+  const SplashScreen({super.key});
+
   @override
   _SplashScreenState createState() => _SplashScreenState();
 }
 
 class _SplashScreenState extends State<SplashScreen> {
 
-  final storage = FlutterSecureStorage();
+  final storage = const FlutterSecureStorage();
 
   Future<void> checkToken() async {
     final accessToken = await storage.read(key: "access");
@@ -29,7 +30,7 @@ class _SplashScreenState extends State<SplashScreen> {
       if (response.statusCode == 200) { // token valid
         Navigator.pushReplacement(
           context,
-          MaterialPageRoute(builder: (context) => SearchPage()),
+          MaterialPageRoute(builder: (context) => const SearchPage()),
         );
       } else { // access token invalid, coba pake refresh token buat dapet access token baru
         print('Token: $accessToken');
@@ -44,19 +45,19 @@ class _SplashScreenState extends State<SplashScreen> {
           await storage.write(key: "access", value: newAccessToken);
           Navigator.pushReplacement(
             context,
-            MaterialPageRoute(builder: (context) => SearchPage()),
+            MaterialPageRoute(builder: (context) => const SearchPage()),
           );
         } else { // refresh tokennya ga valid juga
           Navigator.pushReplacement(
             context,
-            MaterialPageRoute(builder: (context) => Welcome1()),
+            MaterialPageRoute(builder: (context) => const Welcome1()),
           );
         }
       }
     } else { // ini kalo ga ada token dari awal
       Navigator.pushReplacement(
         context,
-        MaterialPageRoute(builder: (context) => Welcome1()),
+        MaterialPageRoute(builder: (context) => const Welcome1()),
       );
     }
   }

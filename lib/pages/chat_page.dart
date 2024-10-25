@@ -98,7 +98,7 @@ class _ChatPageState extends State<ChatPage> {
             onTap: () {
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => ProfilePageContent()),
+                MaterialPageRoute(builder: (context) => const ProfilePageContent()),
               );
             },
             child: const CircleAvatar(
@@ -114,7 +114,7 @@ class _ChatPageState extends State<ChatPage> {
             onPressed: () {
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => FilterPage()),
+                MaterialPageRoute(builder: (context) => const FilterPage()),
               );
             },
           ),

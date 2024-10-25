@@ -5,12 +5,14 @@ import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class FilterPage extends StatefulWidget {
+  const FilterPage({super.key});
+
   @override
   _FilterPageState createState() => _FilterPageState();
 }
 
 class _FilterPageState extends State<FilterPage> {
-  final storage = FlutterSecureStorage();
+  final storage = const FlutterSecureStorage();
   final genderController = TextEditingController();
   final locationController = TextEditingController();
   final bioController = TextEditingController();
@@ -112,7 +114,7 @@ class _FilterPageState extends State<FilterPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(
+        title: const Text(
           'Filter Page',
           style: TextStyle(
             color: Colors.white,
@@ -120,56 +122,56 @@ class _FilterPageState extends State<FilterPage> {
             fontWeight: FontWeight.w800,
           ),
         ),
-        backgroundColor: Color(0xFF00796B),
-        leading: Icon(
+        backgroundColor: const Color(0xFF00796B),
+        leading: const Icon(
           color: Colors.white,
           Icons.filter_alt_rounded,
         ),
       ),
       body: SingleChildScrollView(
         child: Container(
-          color: Color(0xFF009688),
-          padding: EdgeInsets.all(16.0),
+          color: const Color(0xFF009688),
+          padding: const EdgeInsets.all(16.0),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              SizedBox(height: 20),
+              const SizedBox(height: 20),
               _buildDropdown("Gender :", Gender, selectedGender, (value) {
                 setState(() {
                   selectedGender = value;
                 });
               }),
-              SizedBox(height: 20),
+              const SizedBox(height: 20),
               _buildDropdown("Subject :", subjects, selectedSubjects, (value) {
                 setState(() {
                   selectedSubjects = value;
                 });
               }),
-              SizedBox(height: 20),
+              const SizedBox(height: 20),
               _buildDropdown("Role :", roles, selectedRole, (value) {
                 setState(() {
                   selectedRole = value;
                 });
               }),
-              SizedBox(height: 20),
+              const SizedBox(height: 20),
               _buildDropdown("Academic Level :", academicLevels, selectedAcademicLevel, (value) {
                 setState(() {
                   selectedAcademicLevel = value;
                 });
               }),
-              SizedBox(height: 20),
+              const SizedBox(height: 20),
               _buildDropdown("Study Place :", StudyPlace, selectedStudyPlace, (value) {
                 setState(() {
                   selectedStudyPlace = value;
                 });
               }),
-              SizedBox(height: 20),
+              const SizedBox(height: 20),
               _buildDropdown("Learning Type :", LearningType, selectedLearningType, (value) {
                 setState(() {
                   selectedLearningType = value;
                 });
               }),
-              SizedBox(height: 80),
+              const SizedBox(height: 80),
               Center(
                 child: SizedBox(
                   width: 106,
@@ -177,12 +179,12 @@ class _FilterPageState extends State<FilterPage> {
                   child: ElevatedButton(
                     onPressed: userFilter,
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: Color(0xFF00796B),
+                      backgroundColor: const Color(0xFF00796B),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(8),
                       ),
                     ),
-                    child: Text(
+                    child: const Text(
                       'Filter',
                       style: TextStyle(
                         color: Colors.white,
@@ -199,7 +201,7 @@ class _FilterPageState extends State<FilterPage> {
         ),
       ),
       bottomNavigationBar: BottomNavigationBar(
-        backgroundColor: Color(0xFF00796B),
+        backgroundColor: const Color(0xFF00796B),
         items: const [
           BottomNavigationBarItem(
             icon: Icon(Icons.chat, color: Colors.white),
@@ -238,15 +240,15 @@ class _FilterPageState extends State<FilterPage> {
       children: [
         Text(
           label,
-          style: TextStyle(
+          style: const TextStyle(
             fontSize: 16,
             fontWeight: FontWeight.bold,
             color: Colors.white,
           ),
         ),
-        SizedBox(height: 5),
+        const SizedBox(height: 5),
         Container(
-          padding: EdgeInsets.symmetric(horizontal: 10),
+          padding: const EdgeInsets.symmetric(horizontal: 10),
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(10),
             color: Colors.grey[200],
@@ -261,7 +263,7 @@ class _FilterPageState extends State<FilterPage> {
             }).toList(),
             onChanged: onChanged,
             isExpanded: true,
-            underline: SizedBox(),
+            underline: const SizedBox(),
             dropdownColor: Colors.grey[200],
             icon: Icon(Icons.arrow_drop_down, color: Colors.grey[700]),
           ),
@@ -276,13 +278,13 @@ class _FilterPageState extends State<FilterPage> {
       children: [
         Text(
           label,
-          style: TextStyle(
+          style: const TextStyle(
             fontSize: 16,
             fontWeight: FontWeight.bold,
             color: Colors.white,
           ),
         ),
-        SizedBox(height: 5),
+        const SizedBox(height: 5),
         Container(
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(10),
@@ -290,7 +292,7 @@ class _FilterPageState extends State<FilterPage> {
           ),
           child: TextFormField(
             controller: controller,
-            decoration: InputDecoration(
+            decoration: const InputDecoration(
               contentPadding: EdgeInsets.symmetric(horizontal: 10),
               border: InputBorder.none,
             ),

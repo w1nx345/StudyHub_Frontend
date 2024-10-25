@@ -5,7 +5,7 @@ import 'package:learn_hub/pages/login_page.dart';
 
 void main() {
   testWidgets('Halaman Register Menampilkan Semua Elemen', (WidgetTester tester) async {
-    await tester.pumpWidget(MaterialApp(home: SignUpPage(title: 'Register')));
+    await tester.pumpWidget(const MaterialApp(home: SignUpPage(title: 'Register')));
 
     expect(find.byType(Image), findsOneWidget);
     expect(find.byType(TextField), findsNWidgets(3));
@@ -16,11 +16,11 @@ void main() {
   });
 
   testWidgets('Input Email dan Password Valid', (WidgetTester tester) async {
-    await tester.pumpWidget(MaterialApp(home: SignUpPage(title: 'Register')));
+    await tester.pumpWidget(const MaterialApp(home: SignUpPage(title: 'Register')));
 
-    await tester.enterText(find.byKey(Key('emailField')), 'test@example.com');
-    await tester.enterText(find.byKey(Key('passwordField')), 'password123');
-    await tester.tap(find.byKey(Key('dateField')));
+    await tester.enterText(find.byKey(const Key('emailField')), 'test@example.com');
+    await tester.enterText(find.byKey(const Key('passwordField')), 'password123');
+    await tester.tap(find.byKey(const Key('dateField')));
     await tester.pumpAndSettle();
 
     // Pilih tanggal di date picker (contoh: 1 Januari 2000)
@@ -36,11 +36,11 @@ void main() {
   });
 
   testWidgets('Input Email Tidak Valid', (WidgetTester tester) async {
-    await tester.pumpWidget(MaterialApp(home: SignUpPage(title: 'Register')));
+    await tester.pumpWidget(const MaterialApp(home: SignUpPage(title: 'Register')));
 
-    await tester.enterText(find.byKey(Key('emailField')), 'test@com');
-    await tester.enterText(find.byKey(Key('passwordField')), 'password123');
-    await tester.tap(find.byKey(Key('dateField')));
+    await tester.enterText(find.byKey(const Key('emailField')), 'test@com');
+    await tester.enterText(find.byKey(const Key('passwordField')), 'password123');
+    await tester.tap(find.byKey(const Key('dateField')));
     await tester.pumpAndSettle();
 
     // Pilih tanggal di date picker
@@ -57,9 +57,9 @@ void main() {
   });
 
   testWidgets('Input Tanggal Lahir', (WidgetTester tester) async {
-    await tester.pumpWidget(MaterialApp(home: SignUpPage(title: 'Register')));
+    await tester.pumpWidget(const MaterialApp(home: SignUpPage(title: 'Register')));
 
-    await tester.tap(find.byKey(Key('dateField')));
+    await tester.tap(find.byKey(const Key('dateField')));
     await tester.pumpAndSettle();
 
     // Pilih tanggal di date picker
@@ -72,11 +72,11 @@ void main() {
   });
 
   testWidgets('Input Password dengan Panjang Kurang dari 6 Karakter', (WidgetTester tester) async {
-    await tester.pumpWidget(MaterialApp(home: SignUpPage(title: 'Register')));
+    await tester.pumpWidget(const MaterialApp(home: SignUpPage(title: 'Register')));
 
-    await tester.enterText(find.byKey(Key('emailField')), 'test@example.com');
-    await tester.enterText(find.byKey(Key('passwordField')), '123');
-    await tester.tap(find.byKey(Key('dateField')));
+    await tester.enterText(find.byKey(const Key('emailField')), 'test@example.com');
+    await tester.enterText(find.byKey(const Key('passwordField')), '123');
+    await tester.tap(find.byKey(const Key('dateField')));
     await tester.pumpAndSettle();
 
     // Pilih tanggal di date picker
@@ -93,10 +93,10 @@ void main() {
   });
 
   testWidgets('Tanggal Lahir Kosong', (WidgetTester tester) async {
-    await tester.pumpWidget(MaterialApp(home: SignUpPage(title: 'Register')));
+    await tester.pumpWidget(const MaterialApp(home: SignUpPage(title: 'Register')));
 
-    await tester.enterText(find.byKey(Key('emailField')), 'test@example.com');
-    await tester.enterText(find.byKey(Key('passwordField')), 'password123');
+    await tester.enterText(find.byKey(const Key('emailField')), 'test@example.com');
+    await tester.enterText(find.byKey(const Key('passwordField')), 'password123');
 
     await tester.tap(find.text('Join Now'));
     await tester.pump();
@@ -108,11 +108,11 @@ void main() {
 
   testWidgets('Menampilkan Pesan Kesalahan dari Server', (WidgetTester tester) async {
     // Mock backend response to simulate email already registered error
-    await tester.pumpWidget(MaterialApp(home: SignUpPage(title: 'Register')));
+    await tester.pumpWidget(const MaterialApp(home: SignUpPage(title: 'Register')));
 
-    await tester.enterText(find.byKey(Key('emailField')), 'existing@example.com');
-    await tester.enterText(find.byKey(Key('passwordField')), 'password123');
-    await tester.tap(find.byKey(Key('dateField')));
+    await tester.enterText(find.byKey(const Key('emailField')), 'existing@example.com');
+    await tester.enterText(find.byKey(const Key('passwordField')), 'password123');
+    await tester.tap(find.byKey(const Key('dateField')));
     await tester.pumpAndSettle();
 
     // Pilih tanggal di date picker
@@ -128,11 +128,11 @@ void main() {
   });
 
   testWidgets('Tombol Join Now Tidak Dapat Diklik Jika Input Tidak Lengkap', (WidgetTester tester) async {
-    await tester.pumpWidget(MaterialApp(home: SignUpPage(title: 'Register')));
+    await tester.pumpWidget(const MaterialApp(home: SignUpPage(title: 'Register')));
 
-    await tester.enterText(find.byKey(Key('emailField')), 'test@example.com');
+    await tester.enterText(find.byKey(const Key('emailField')), 'test@example.com');
     // Password field is left empty
-    await tester.tap(find.byKey(Key('dateField')));
+    await tester.tap(find.byKey(const Key('dateField')));
     await tester.pumpAndSettle();
 
     // Pilih tanggal di date picker

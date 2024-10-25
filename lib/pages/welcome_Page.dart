@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'login_page.dart'; // Pastikan untuk mengimpor halaman login
 
 class Welcome1 extends StatefulWidget {
+  const Welcome1({super.key});
+
   @override
   _Welcome1State createState() => _Welcome1State();
 }
@@ -19,12 +21,12 @@ class _Welcome1State extends State<Welcome1> {
   }
 
   void _startPageAutoTransition() {
-    Future.delayed(Duration(seconds: 4), () {
+    Future.delayed(const Duration(seconds: 4), () {
       int nextPage = (_currentPage + 1) % 3; // Menghitung halaman berikutnya, balik ke 0 setelah halaman terakhir
 
       _pageController.animateToPage(
         nextPage,
-        duration: Duration(milliseconds: 500),
+        duration: const Duration(milliseconds: 500),
         curve: Curves.easeInOut,
       );
       setState(() {
@@ -120,12 +122,12 @@ class _Welcome1State extends State<Welcome1> {
                       backgroundColor: _currentPage == 0 ? Colors.green : Colors.grey[
                     300],
                 ),
-                SizedBox(width: 5),
+                const SizedBox(width: 5),
                 CircleAvatar(
                   radius: 4,
                   backgroundColor: _currentPage == 1 ? Colors.green : Colors.grey[300],
                 ),
-                SizedBox(width: 5),
+                const SizedBox(width: 5),
                 CircleAvatar(
                   radius: 4,
                   backgroundColor: _currentPage == 2 ? Colors.green : Colors.grey[300],
@@ -133,7 +135,7 @@ class _Welcome1State extends State<Welcome1> {
               ],
             ),
 
-            SizedBox(height: 20),
+            const SizedBox(height: 20),
           ],
         ),
       ),
@@ -150,10 +152,10 @@ class _Welcome1State extends State<Welcome1> {
     return Align(
       alignment: Alignment.bottomCenter, // Menempatkan box di bawah layar
       child: Container(
-        padding: EdgeInsets.all(20),
+        padding: const EdgeInsets.all(20),
         height: 200, // Tinggi persegi panjang
         width: double.infinity, // Lebar penuh
-        decoration: BoxDecoration(
+        decoration: const BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.zero, // Tidak ada sudut melengkung
           boxShadow: [
@@ -169,13 +171,13 @@ class _Welcome1State extends State<Welcome1> {
           children: [
             Text(
               title,
-              style: TextStyle(
+              style: const TextStyle(
                 fontSize: 22, // Ukuran teks lebih besar
                 fontWeight: FontWeight.bold,
                 color: Colors.black87,
               ),
             ),
-            SizedBox(height: 10),
+            const SizedBox(height: 10),
             Text(
               description,
               textAlign: TextAlign.center,
@@ -184,7 +186,7 @@ class _Welcome1State extends State<Welcome1> {
                 color: Colors.grey[600],
               ),
             ),
-            SizedBox(height: 20),
+            const SizedBox(height: 20),
             ElevatedButton(
               onPressed: onPressed, // Panggil fungsi onPressed yang diteruskan
               style: ElevatedButton.styleFrom(
@@ -192,14 +194,14 @@ class _Welcome1State extends State<Welcome1> {
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(30),
                 ),
-                padding: EdgeInsets.symmetric(
+                padding: const EdgeInsets.symmetric(
                   horizontal: 40,
                   vertical: 15, // Tombol lebih besar
                 ),
               ),
               child: Text(
                 buttonText,
-                style: TextStyle(
+                style: const TextStyle(
                   fontSize: 16, // Ukuran teks tombol lebih besar
                   fontWeight: FontWeight.bold,
                   color: Colors.white,

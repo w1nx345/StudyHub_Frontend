@@ -75,7 +75,7 @@ flutter:
     - lib/images/facebook.png
     - lib/images/google.png
     - lib/images/Study Hub Logo.png
-
+    - lib/images/jiwon.png
   #   - images/a_dot_ham.jpeg
 
   # An image asset can refer to one or more resolution-specific "variants", see

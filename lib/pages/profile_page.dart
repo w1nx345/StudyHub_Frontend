@@ -5,8 +5,6 @@ import 'dart:convert';
 import 'dart:io';
 import 'package:image_picker/image_picker.dart';
 
-
-
 class ProfilePageContent extends StatefulWidget {
   const ProfilePageContent({super.key});
 
@@ -82,41 +80,37 @@ class _ProfilePageContentState extends State<ProfilePageContent> {
   final ImagePicker _picker = ImagePicker();
   final storage = const FlutterSecureStorage();
 
-
   @override
   void initState() {
     super.initState();
     getUserId();
   }
 
-  Future<void> getUserId() async { // ngambil id si user
+  Future<void> getUserId() async {
     userId = await storage.read(key: 'id');
     if (userId != null) {
       getUserData(userId!);
     }
   }
-  ImageProvider _imageFromFilePath(String? filePath) { // buat nentuin apakah si user ini punya path untuk profile picture atau tidak
-    if (filePath == null) { //user ga punya profile picture, jadi pake default
-      return NetworkImage('https://cdn.pixabay.com/photo/2023/08/24/19/58/saitama-8211499_1280.png');
+
+  ImageProvider _imageFromFilePath(String? filePath) {
+    if (filePath == null) {
+      return const NetworkImage('https://cdn.pixabay.com/photo/2023/08/24/19/58/saitama-8211499_1280.png');
     } else {
-      return NetworkImage('http://10.0.2.2:8000/$filePath'); // ngambil profile picture si user
+      return NetworkImage('http://10.0.2.2:8000/$filePath');
     }
   }
-  Future<void> getUserData(String userId) async { // ngambil data user
+
+  Future<void> getUserData(String userId) async {
     final response = await http.get(Uri.parse('http://10.0.2.2:8000/profile?id=$userId'));
     if (response.statusCode == 200) {
       final data = json.decode(response.body);
-      print('User data: $data'); // jangan lupa diapus
       setState(() {
         nameController.text = data['first_name'];
         emailController.text = data['email'];
         selectedRole = data['role'];
         selectedSubjects = data['matkul'];
-        if (data['profilePicture'] != null) {
-         _profilePicturePath= data['profilePicture'];
-        }else{
-          _profilePicturePath = null;
-        }
+        _profilePicturePath = data['profilePicture'];
         selectedGender = data['gender'];
         locationController.text = data['location'];
         bioController.text = data['bio'];
@@ -125,11 +119,11 @@ class _ProfilePageContentState extends State<ProfilePageContent> {
         selectedAcademicLevel = data['academicLevel'];
       });
     } else {
-      print("No user data"); // jangan lupa diapus / diganti error handling
+      print("No user data");
     }
   }
 
-  Future<void> updateUserData() async { // update user data
+  Future<void> updateUserData() async {
     if (_image != null) {
       await uploadImage(_image!);
     }
@@ -158,7 +152,7 @@ class _ProfilePageContentState extends State<ProfilePageContent> {
     }
   }
 
-  Future<void> getImage() async { // buat ngambil image dr gallery
+  Future<void> getImage() async {
     try {
       final pickedFile = await _picker.pickImage(source: ImageSource.gallery);
       if (pickedFile != null) {
@@ -172,7 +166,8 @@ class _ProfilePageContentState extends State<ProfilePageContent> {
       print('Error picking image: $e');
     }
   }
-  Future<void> uploadImage(File image) async { // fungsi upload image
+
+  Future<void> uploadImage(File image) async {
     var request = http.MultipartRequest(
         'POST', Uri.parse('http://10.0.2.2:8000/profileImage/upload/'));
     request.files.add(await http.MultipartFile.fromPath('profilePicture', image.path));
@@ -190,23 +185,16 @@ class _ProfilePageContentState extends State<ProfilePageContent> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text(
-          "Profile Page",
-          style: TextStyle(
-            color: Colors.white,
-            fontFamily: 'OpenSans',
-            fontWeight: FontWeight.w800,
+        automaticallyImplyLeading: false, // This removes the back button
+        title: ListTile(
+          contentPadding: EdgeInsets.zero, // Remove default padding
+          leading: Image.asset(
+            'lib/images/Study Hub Logo.png', // Path to your "Study Hub" logo
+            height: 40, // Adjust as needed
           ),
         ),
-        leading: const Padding(
-          padding: EdgeInsets.only(left: 10.0),
-          child: CircleAvatar(
-            radius: 30,
-            backgroundColor: Colors.white,
-            child: Icon(Icons.person, size: 40, color: Color(0xFF241E90)),
-          ),
-        ),
-        backgroundColor: const Color(0xFF00796B),
+        centerTitle: false,
+        backgroundColor: const Color(0x5F5F5F),
       ),
       body: SingleChildScrollView(
         child: Center(
@@ -215,6 +203,23 @@ class _ProfilePageContentState extends State<ProfilePageContent> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
+                Container(
+                  width: double.infinity, // Agar penuh ke kiri dan kanan
+                  color: Colors.green,
+                  padding: const EdgeInsets.symmetric(vertical: 10.0),
+                  margin: EdgeInsets.zero, // Agar tidak ada margin di tepi
+                  child: const Text(
+                    "My Profile",
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 24,
+                      fontWeight: FontWeight.bold,
+                      fontFamily: 'OpenSans',
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
+                ),
+                const SizedBox(height: 10),
                 Stack(
                   children: [
                     CircleAvatar(
@@ -248,7 +253,7 @@ class _ProfilePageContentState extends State<ProfilePageContent> {
                   style: TextStyle(
                       fontSize: 24,
                       fontWeight: FontWeight.w800,
-                      color: Colors.white,
+                      color: Colors.green,
                       fontFamily: 'OpenSans'),
                 ),
                 const SizedBox(height: 10),
@@ -295,61 +300,35 @@ class _ProfilePageContentState extends State<ProfilePageContent> {
                     selectedAcademicLevel = value;
                   });
                 }),
-                const SizedBox(height: 20),
-                ElevatedButton(
-                  onPressed: updateUserData,
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color(0xFF241E90),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(8),
+                const SizedBox(height: 10),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        foregroundColor: Colors.green, // Warna hijau untuk tombol "Cancel"
+                      ),
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                      },
+                      child: const Text('Cancel'),
                     ),
-                  ),
-                  child: const Text(
-                    'Save',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontWeight: FontWeight.w800,
-                      fontSize: 20,
-                      fontFamily: 'OpenSans',
+                    const SizedBox(width: 20),
+                    ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        foregroundColor: Colors.green, // Warna hijau untuk tombol "Save"
+                      ),
+                      onPressed: updateUserData,
+                      child: const Text('Save'),
                     ),
-                  ),
+                  ],
                 ),
               ],
             ),
           ),
         ),
       ),
-      backgroundColor: const Color(0xFF009688),
-      bottomNavigationBar: BottomNavigationBar(
-        backgroundColor: const Color(0xFF00796B),
-        items: const [
-          BottomNavigationBarItem(
-            icon: Icon(Icons.chat, color: Colors.white),
-            label: '',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.search, color: Colors.white),
-            label: '',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.settings, color: Colors.white),
-            label: '',
-          ),
-        ],
-        onTap: (index) {
-          switch (index) {
-            case 0:
-              Navigator.pushNamed(context, '/chatlist');
-              break;
-            case 1:
-              Navigator.pushNamed(context, '/search');
-              break;
-            case 2:
-              Navigator.pushNamed(context, '/settings');
-              break;
-          }
-        },
-      ),
+      backgroundColor: Colors.white,
     );
   }
 
@@ -357,66 +336,37 @@ class _ProfilePageContentState extends State<ProfilePageContent> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
-          label,
-          style: const TextStyle(
-            fontSize: 16,
-            fontWeight: FontWeight.bold,
-            color: Colors.white,
-          ),
-        ),
+        Text(label),
         const SizedBox(height: 5),
-        Container(
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(10),
-            color: Colors.grey[200],
-          ),
-          child: TextFormField(
-            controller: controller,
-            decoration: const InputDecoration(
-              contentPadding: EdgeInsets.symmetric(horizontal: 10),
-              border: InputBorder.none,
-            ),
+        TextField(
+          controller: controller,
+          decoration: const InputDecoration(
+            border: OutlineInputBorder(),
           ),
         ),
       ],
     );
   }
 
-  Widget _buildDropdown(String label, List<String> items, String? selectedItem,
-      ValueChanged<String?> onChanged) {
+  Widget _buildDropdown(
+      String label, List<String> items, String? selectedValue, ValueChanged<String?> onChanged) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
-          label,
-          style: const TextStyle(
-            fontSize: 16,
-            fontWeight: FontWeight.bold,
-            color: Colors.white,
-          ),
-        ),
+        Text(label),
         const SizedBox(height: 5),
-        Container(
-          padding: const EdgeInsets.symmetric(horizontal: 10),
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(10),
-            color: Colors.grey[200],
+        DropdownButtonFormField<String>(
+          decoration: const InputDecoration(
+            border: OutlineInputBorder(),
           ),
-          child: DropdownButton<String>(
-            value: selectedItem,
-            items: items.map((String item) {
-              return DropdownMenuItem<String>(
-                value: item,
-                child: Text(item),
-              );
-            }).toList(),
-            onChanged: onChanged,
-            isExpanded: true,
-            underline: const SizedBox(), // Remove underline
-            dropdownColor: Colors.grey[200],
-            icon: Icon(Icons.arrow_drop_down, color: Colors.grey[700]),
-          ),
+          value: selectedValue,
+          items: items.map((String value) {
+            return DropdownMenuItem<String>(
+              value: value,
+              child: Text(value),
+            );
+          }).toList(),
+          onChanged: onChanged,
         ),
       ],
     );

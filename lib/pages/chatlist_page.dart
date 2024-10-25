@@ -8,13 +8,15 @@ import 'package:learn_hub/pages/chat_page.dart';
 import 'package:timeago/timeago.dart' as timeago;
 
 class ChatListPage extends StatefulWidget {
+  const ChatListPage({super.key});
+
   @override
   _ChatListPageState createState() => _ChatListPageState();
 }
 
 class _ChatListPageState extends State<ChatListPage> {
   List<dynamic> convoList = [];
-  final storage = FlutterSecureStorage();
+  final storage = const FlutterSecureStorage();
   String? userId;
 
 
@@ -53,7 +55,7 @@ class _ChatListPageState extends State<ChatListPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color(0xFF2F27CE),
+      backgroundColor: const Color(0xFF2F27CE),
       appBar: AppBar(
         centerTitle: false,
         leading: Padding(
@@ -61,10 +63,10 @@ class _ChatListPageState extends State<ChatListPage> {
           child: GestureDetector(
             onTap: () {
               Navigator.push(
-                context, MaterialPageRoute(builder: (context) => ProfilePageContent()),
+                context, MaterialPageRoute(builder: (context) => const ProfilePageContent()),
               );
             },
-            child: CircleAvatar(
+            child: const CircleAvatar(
               backgroundImage: NetworkImage('https://cdn.pixabay.com/photo/2023/08/24/19/58/saitama-8211499_1280.png'),
               radius: 30,
             ),
@@ -72,21 +74,21 @@ class _ChatListPageState extends State<ChatListPage> {
         ),
         actions: <Widget>[
           IconButton(
-            icon: Icon(Icons.filter_alt_rounded, color: Colors.white),
+            icon: const Icon(Icons.filter_alt_rounded, color: Colors.white),
             onPressed: () {
               Navigator.push(
-                context, MaterialPageRoute(builder: (context) => FilterPage()),
+                context, MaterialPageRoute(builder: (context) => const FilterPage()),
               );
             },
           ),
         ],
-        backgroundColor: Color(0xFF00796B),
+        backgroundColor: const Color(0xFF00796B),
       ),
       body: Container(
-        color: Color(0xFF009688),
+        color: const Color(0xFF009688),
         child: Column(
           children: <Widget>[
-            Padding(
+            const Padding(
               padding: EdgeInsets.fromLTRB(16.0, 16.0, 16.0, 0),
               child: Row(
                 children: [
@@ -148,8 +150,8 @@ class _ChatListPageState extends State<ChatListPage> {
               ),
             ),
             BottomNavigationBar(
-              backgroundColor: Color(0xFF00796B),
-              items: [
+              backgroundColor: const Color(0xFF00796B),
+              items: const [
                 BottomNavigationBarItem(
                   icon: Icon(Icons.chat, color: Colors.white),
                   label: '',
@@ -193,39 +195,39 @@ class ChatItem extends StatelessWidget {
   final String time;
   final VoidCallback? onTap;
 
-  ChatItem({required this.avatar, required this.name, required this.message, required this.time, this.onTap});
+  const ChatItem({super.key, required this.avatar, required this.name, required this.message, required this.time, this.onTap});
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        padding: EdgeInsets.symmetric(vertical: 15.0, horizontal: 20.0),
+        padding: const EdgeInsets.symmetric(vertical: 15.0, horizontal: 20.0),
         child: Row(
           children: <Widget>[
             CircleAvatar(
               backgroundImage: NetworkImage(avatar), // Fixing the error by using NetworkImage
               radius: 30.0,
             ),
-            SizedBox(width: 20.0),
+            const SizedBox(width: 20.0),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
                   Text(
                     name,
-                    style: TextStyle(color: Colors.white, fontWeight: FontWeight.w600, fontSize: 18.0, fontFamily: 'OpenSans'),
+                    style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w600, fontSize: 18.0, fontFamily: 'OpenSans'),
                   ),
                   Text(
                     message,
-                    style: TextStyle(color: Colors.white, fontSize: 16.0),
+                    style: const TextStyle(color: Colors.white, fontSize: 16.0),
                   ),
                 ],
               ),
             ),
             Text(
               time,
-              style: TextStyle(color: Colors.white, fontSize: 14.0),
+              style: const TextStyle(color: Colors.white, fontSize: 14.0),
             ),
           ],
         ),

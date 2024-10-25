@@ -6,12 +6,11 @@ import 'package:learn_hub/pages/search_page.dart';
 import 'package:learn_hub/pages/settings_page.dart';
 import 'package:flutter_card_swiper/flutter_card_swiper.dart';
 import 'package:http/http.dart' as http;
-import 'package:learn_hub/users/users_model.dart';
 import 'dart:convert';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-import 'dart:io';
 class LikedYouPage extends StatefulWidget {
+  const LikedYouPage({super.key});
+
   @override
   State<LikedYouPage> createState() => _LikedYouPageState();
 }
@@ -77,7 +76,7 @@ class _LikedYouPageState extends State<LikedYouPage> {
     if (index == 0) {
       Navigator.push(
         context,
-        MaterialPageRoute(builder: (context) => ChatListPage()),
+        MaterialPageRoute(builder: (context) => const ChatListPage()),
       );
     } else if (index == 2) {
       Navigator.push(
@@ -87,7 +86,7 @@ class _LikedYouPageState extends State<LikedYouPage> {
     } else if (index == 1) {
       Navigator.push(
           context,
-          MaterialPageRoute(builder: (context) => SearchPage())
+          MaterialPageRoute(builder: (context) => const SearchPage())
       );
     }
 
@@ -111,18 +110,18 @@ class _LikedYouPageState extends State<LikedYouPage> {
       }
     });
     if (direction == CardSwiperDirection.right) {
-      final pilihan = 'Match';
+      const pilihan = 'Match';
       MatchUser(likedId.toString(), pilihan);
     }
     if (direction == CardSwiperDirection.left){
-      final pilihan = 'Not Match';
+      const pilihan = 'Not Match';
       MatchUser(likedId.toString(), pilihan);
     }
   }
 
   ImageProvider _imageFromFilePath(String? filePath) { // buat nentuin apakah si user ini punya path untuk profile picture atau tidak
     if (filePath == null) { //user ga punya profile picture, jadi pake default
-      return NetworkImage('https://cdn.pixabay.com/photo/2023/08/24/19/58/saitama-8211499_1280.png');
+      return const NetworkImage('https://cdn.pixabay.com/photo/2023/08/24/19/58/saitama-8211499_1280.png');
     } else {
       return NetworkImage('http://10.0.2.2:8000/$filePath'); // ngambil profile picture si user
     }
@@ -196,8 +195,8 @@ class _LikedYouPageState extends State<LikedYouPage> {
                   _handleSwipe(CardSwiperDirection.right, allUsers[indexCurrent]['id'].toString());
                 }
               },
-              child: Icon(Icons.thumb_up, color: Colors.white),
               backgroundColor: Colors.green,
+              child: const Icon(Icons.thumb_up, color: Colors.white),
             ),
           ),
           Positioned(
@@ -211,8 +210,8 @@ class _LikedYouPageState extends State<LikedYouPage> {
                   _handleSwipe(CardSwiperDirection.left, allUsers[indexCurrent]['id'].toString());
                 }
               },
-              child: Icon(Icons.thumb_down_rounded, color: Colors.white),
               backgroundColor: Colors.red,
+              child: const Icon(Icons.thumb_down_rounded, color: Colors.white),
             ),
           ),
         ],
@@ -245,17 +244,17 @@ class _LikedYouPageState extends State<LikedYouPage> {
             icon: const Icon(Icons.filter_alt_rounded, color: Colors.white),
             onPressed: (){
               Navigator.push(
-                context, MaterialPageRoute(builder: (context) => FilterPage()),
+                context, MaterialPageRoute(builder: (context) => const FilterPage()),
               );
             },
           ),
         ],
         backgroundColor: const Color(0xFF00796B),
       ),
-      backgroundColor: Color(0xFF009688),
+      backgroundColor: const Color(0xFF009688),
       bottomNavigationBar: BottomNavigationBar(
-        backgroundColor: Color(0xFF00796B),
-        items: [
+        backgroundColor: const Color(0xFF00796B),
+        items: const [
           BottomNavigationBarItem(
             icon: Icon(Icons.chat, color: Colors.white),
             label: '',
